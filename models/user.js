@@ -6,13 +6,14 @@ const UserSchema = new Schema (
     {
         email: { type: String, minLength: 2, maxLength: 20, unique: true, required: true },
         username: { type: String, minLength: 2, maxLength: 20, unique: true, required: true},
-        password: { type: String, minLength: 2, maxLength: 20, required: true },
+        password: { type: String, minLength: 2, required: true },
         creation: { type: Date, default: Date.now()},
         display_name: { type: String, minLength: 1, maxLength: 15, required: true},
         about_me: { type: String, maxLength: 50},
         friends: [ { type: Schema.Types.ObjectId, ref: 'User'} ],
-        avatar_url: { type: String},
-        chats: [ {type: Schema.Types.ObjectId, ref: 'Chat'} ]
+        avatar_url: { type: String },
+        chats: [ {type: Schema.Types.ObjectId, ref: 'Chat'} ],
+        online: { type: Boolean, default: false}
     },
     {
         toObject: { virtuals: true },

@@ -16,9 +16,17 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(bodyParser.json())
-
+app.use(session({ secret: `${process.env.secret}`, resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
-app.use(express.urlencoded({ extended: false }));
+app.use(passport.authenticate('session'));
+app.use(passport.session())
+
+app.use(function(req, res, next) {
+    res.locals.user = req.user || null;
+    console.log(res.locals.user)
+    next();
+  });
+  
 
 app.listen('3000', () => {
     console.log('Now listening on port 3000')
