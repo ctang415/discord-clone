@@ -1,3 +1,4 @@
+import StyledButton from "./styled/styledbutton"
 import StyledDiv from "./styled/styleddiv"
 import StyledLink from "./styled/styledlink"
 
@@ -12,6 +13,7 @@ const Register = () => {
                 <input type="text"></input>
                 <label>Password</label>
                 <input type='password'></input>
+                <StyledButton>Continue</StyledButton>
             </form>
             <StyledDiv style={{ padding: '1em'}}>
                 <StyledLink to="/">Already have an account?</StyledLink>

@@ -2,14 +2,23 @@ import { useContext } from "react"
 import { LoginContext } from "./logincontext"
 import StyledLink from "./styled/styledlink"
 import StyledDiv from "./styled/styleddiv"
+import StyledButton from "./styled/styledbutton"
+import SideBar from "./sidebar"
+import Friends from "./friends"
+import { useState, useEffect } from "react"
 
 const Home = () => {
     const { login } = useContext(LoginContext)
-    
+    useEffect(() => {
+        console.log(login)
+    },[])
+
     if (login) {
         return (
-            <>
-            </>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '1em'}}>
+                <SideBar/>
+                <Friends/>
+            </div>
         )
     } else {
         return (
@@ -21,7 +30,7 @@ const Home = () => {
                 <input type='email' name="email" required></input>
                 <label htmlFor="password">Password</label>
                 <input type='password' name="password" required></input>
-                <button>Login</button>
+                <StyledButton>Login</StyledButton>
             </form>
             <StyledDiv>
                 <p>Need an account?</p> 

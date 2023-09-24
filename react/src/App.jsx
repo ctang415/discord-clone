@@ -4,7 +4,7 @@ import { Outlet } from 'react-router'
 import { LoginContext } from './components/logincontext'
 
 function App() {
-  const [login, setLogin] = useState(false)
+  const [login, setLogin] = useState(true)
   
   const logOut = async () => {
     try {
