@@ -4,7 +4,14 @@ import { Outlet } from 'react-router'
 import { LoginContext } from './components/logincontext'
 
 function App() {
-  const [login, setLogin] = useState(true)
+  const [login, setLogin] = useState(false)
+  const [ data, setData ] = useState( [ 
+      {name: 'Makarich', online: false, message: ['Hey', '?', 'ok'], id: "756733"}, 
+      {name: 'BV', online: true, message: ['yo'], id: '6231213'}, 
+      { name: 'Toki', online: true, message: [':o'], id: '3123213' }, 
+      { name: 'saru', online: false, message: ['val?'], id: '4354354'}
+    ])
+    const [ userData, setUserData ] = useState( {name: 'cb' } )
   
   const logOut = async () => {
     try {
@@ -22,7 +29,7 @@ function App() {
 
   return (
     <>
-      <LoginContext.Provider value={{ login, setLogin, logOut}}>
+      <LoginContext.Provider value={{ login, setLogin, logOut, data, userData}}>
         <Outlet/>
       </LoginContext.Provider>
     </>

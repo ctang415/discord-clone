@@ -37,18 +37,29 @@ exports.user_create_get = asyncHandler ( async (req, res, next) => {
 })
 
 exports.user_create_post = [
+    body('email', "Email already exists").custom( async value => {
+        const existingUser = await User.findOne( {email: value})
+        if (existingUser) {
+            throw new Error('Email already exists')
+        }
+    }),
     body('email', 'Email must be between 2-20 characters.').trim().isLength({min: 2, max: 20}).escape(),
     body('username', 'Username must be between 2-20 characters.').trim().isLength({min: 2, max:20}).escape(),
     body('password', 'Password must be at least 2 characters.').trim().isLength({min: 2}).escape(),
-    asyncHandler (async (res, req, next) => {
+    asyncHandler (async (req, res, next) => {
+        try {
+            bcrypt.hash(req.body.password, 10, async (err, hash) => {
+            if (err) {
+                return err
+            }   
         const errors = validationResult(req)
         const user = new User (
             {
                 email: req.body.email,
                 username: req.body.username,
-                password: req.body.password,
+                password: hash,
                 display_name: req.body.username,
-                avatar_url,
+                avatar_url: req.body.avatar
             }
         )
         if (!errors.isEmpty()) {
@@ -58,7 +69,10 @@ exports.user_create_post = [
             await user.save()
             res.status(200).json(user)
         }
-
+        })
+    } catch (err) {
+        return next(err) 
+    }
     })
 ]
 

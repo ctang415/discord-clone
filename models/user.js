@@ -8,7 +8,7 @@ const UserSchema = new Schema (
         username: { type: String, minLength: 2, maxLength: 20, unique: true, required: true},
         password: { type: String, minLength: 2, required: true },
         creation: { type: Date, default: Date.now()},
-        display_name: { type: String, minLength: 1, maxLength: 15, required: true},
+        display_name: { type: String, minLength: 1, maxLength: 20, required: true},
         about_me: { type: String, maxLength: 50},
         friends: [ { type: Schema.Types.ObjectId, ref: 'User'} ],
         avatar_url: { type: String },
@@ -26,7 +26,7 @@ UserSchema.virtual('creation_formatted').get(function () {
 })
 
 UserSchema.virtual('url').get(function () {
-    return `/users/${this_.id}`
+    return `/users/${this._id}`
 })
 
 module.exports = mongoose.model('User', UserSchema)

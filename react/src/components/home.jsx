@@ -8,22 +8,24 @@ import Friends from "./friends"
 import { useState, useEffect } from "react"
 
 const Home = () => {
+    const [ email, setEmail ] = useState('')
+    const [ password, setPassword ] = useState('')
     const { login } = useContext(LoginContext)
-    useEffect(() => {
-        console.log(login)
-    },[])
+
 
     if (login) {
         return (
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '1em'}}>
-                <SideBar/>
-                <Friends/>
-            </div>
+            <> 
+                <div style={{ display: 'flex', flexDirection: 'row', gap: '1em'}}>
+                    <SideBar/>
+                    <Friends/>
+                </div>
+            </>
         )
     } else {
         return (
-            <div style={{ display: 'flex', flexDirection: 'column'}}>
-            <h2>Welcome back!</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', margin: '5%'}}>
+            <h2 style={{color: 'white'}}>Welcome back!</h2>
             <h3>We're so excited to see you again!</h3>
             <form style={{ display: 'flex', flexDirection: 'column', gap: '1em', alignSelf: 'center'}}>
                 <label htmlFor="email">Email</label>
@@ -34,7 +36,7 @@ const Home = () => {
             </form>
             <StyledDiv>
                 <p>Need an account?</p> 
-                <StyledLink to="/register">Register</StyledLink>
+                <StyledLink to="/register" style={{ color: '#7289DA'}}>Register</StyledLink>
             </StyledDiv>
             </div>
         )
