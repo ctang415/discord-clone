@@ -1,5 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose');
+var createError = require('http-errors');
 const express = require('express')
 const cors = require('cors')
 const passport = require('passport')
@@ -19,20 +20,20 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(bodyParser.json())
 app.use(session({ secret: `${process.env.secret}`, resave: false, saveUninitialized: true }));
-app.use(passport.initialize());
+app.use(passport.initialize()); 
 app.use(passport.authenticate('session'));
 app.use(passport.session())
+
+
+app.use('/', indexRouter)
 
 app.use(function(req, res, next) {
     res.locals.user = req.user || null;
     console.log(res.locals.user)
     next();
   });
+
   
-
-  app.use('/', indexRouter)
-
-
 app.listen('3000', () => {
     console.log('Now listening on port 3000')
 })

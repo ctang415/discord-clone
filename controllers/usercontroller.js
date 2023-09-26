@@ -43,6 +43,12 @@ exports.user_create_post = [
             throw new Error('Email already exists')
         }
     }),
+    body('username', 'Username already exists').custom( async value => {
+        const existingUser = await User.findOne( {username: value})
+        if (existingUser) {
+            throw new Error('User already exists')
+        }
+    }),
     body('email', 'Email must be between 2-20 characters.').trim().isLength({min: 2, max: 20}).escape(),
     body('username', 'Username must be between 2-20 characters.').trim().isLength({min: 2, max:20}).escape(),
     body('password', 'Password must be at least 2 characters.').trim().isLength({min: 2}).escape(),
@@ -63,7 +69,7 @@ exports.user_create_post = [
             }
         )
         if (!errors.isEmpty()) {
-            res.status(404).json({user: user, errors: errors.array()})
+            res.status(400).json({user: user, errors: errors.array()})
             return
         } else {
             await user.save()

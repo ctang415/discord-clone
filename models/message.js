@@ -18,4 +18,8 @@ MessageSchema.virtual('timestamp_formatted').get( function () {
     return DateTime.fromJSDate(this.timestamp).toFormat('yyyy-MM-dd')
 })
 
+MessageSchema.virtual('creation_time').get( function () {
+    return DateTime.fromJSDate(this.creation).toFormat('hh:mm a')
+})
+
 module.exports = mongoose.model('Message', MessageSchema)
