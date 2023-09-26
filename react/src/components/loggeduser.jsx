@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { LoginContext } from "./logincontext"
 import Discord from "./styled/avatar"
 import Mic from '../assets/microphone.svg'
@@ -16,12 +16,15 @@ const StyledImg = styled.img`
 
 const LoggedUser = () => {
     const { userData } = useContext(LoginContext)
+    useEffect(() => {
+        console.log(userData)
+    }, [])
     return (
         <>
             <div style={{ backgroundColor: '#1e2124', position: 'fixed', bottom: '0', minWidth: '15vw', maxWidth: '15vw'}}>
                 <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5em', justifyContent: 'space-evenly'}}>
                     <Discord/>
-                    <h5>{userData.name}</h5>
+                    <h5>{userData[0].display_name}</h5>
                     <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5em', alignItems: 'center'}}>
                         <StyledImg style={{ cursor: 'pointer'}} src={Mic} alt="Microphone icon"/>
                         <StyledImg style={{ cursor: 'pointer'}} src={Headset} alt="Headset icon"/>

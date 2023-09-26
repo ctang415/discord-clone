@@ -22,7 +22,7 @@ const StyledH4 = styled.h4`
 `
 
 const SideBar = () => {
-    const { data } = useContext(LoginContext)
+    const { friends } = useContext(LoginContext)
     
     return (
         <div style={{ display: "flex", flexDirection: 'column', backgroundColor: '#36393e', 
@@ -39,7 +39,7 @@ const SideBar = () => {
             <h5>+</h5>
             </div>
             <StyledUl>
-                {data.map(user => {
+                {friends.map(user => {
                     return (
                         <div key={user.name} style={{ display: 'flex', flexDirection:'row'}}>                        
                         <StyledLink  to={`/chats/${user.id}`}>

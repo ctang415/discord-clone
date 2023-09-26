@@ -22,11 +22,11 @@ const Chat = () => {
     const [ name, setName ] = useState('')
     const [user, setUser] = useState([])
     const [ messages, setMessages] = useState([])
-    const { data } = useContext(LoginContext)
+    const { friends } = useContext(LoginContext)
     const params = useParams()
 
     useEffect(() => {
-        const filter = data.filter(x => x.id === params.chatid)
+        const filter = friends.filter(x => x.id === params.chatid)
         console.log(filter)
         setMessages(filter.map(friend => friend.message))
         console.log(messages)

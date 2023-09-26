@@ -10,7 +10,7 @@ import { useState, useEffect } from "react"
 const Home = () => {
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
-    const { login } = useContext(LoginContext)
+    const { login, setLogin, userData, setUserData, friends, setFriends } = useContext(LoginContext)
     const [ error, setError ] = useState('')
 
     const handleLogin = async (e) => {
@@ -27,6 +27,9 @@ const Home = () => {
             }
             const data = await response.json()
             if (response.status === 200) {
+                setLogin(true)
+                setUserData([data.data])
+                setFriends(data.data.friends)
                 console.log(data)
             }
         } catch (err) {

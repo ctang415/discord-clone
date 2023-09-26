@@ -25,7 +25,7 @@ export const StyledListFriend = styled(StyledList)`
 `
 
 const Friends = () => {
-    const { data } = useContext(LoginContext)
+    const { friends } = useContext(LoginContext)
     const friendFilter = ['Online', 'All', 'Pending', 'Blocked']
     
     return (
@@ -48,9 +48,9 @@ const Friends = () => {
             <div style={{ display: 'flex', justifyContent: 'center'}}>
                 <StyledInput style={{padding: '0.5em', color: 'white'}} placeholder="Search" type="text"></StyledInput>
             </div>
-            <h4>ONLINE - {data.filter(x => x.online !== false).length}</h4>
+            <h4>ONLINE - {friends.filter(x => x.online !== false).length}</h4>
             <StyledUl>
-                {data.filter(x => x.online !== false).map(friend => {
+                {friends.filter(x => x.online !== false).map(friend => {
                     return (
                         <StyledLink style={{display:'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}} 
                         key={friend.name} to={`/chats/${friend.id}`}>
