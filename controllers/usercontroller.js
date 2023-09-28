@@ -86,7 +86,36 @@ exports.user_update_get = asyncHandler ( async (req, res, next) => {
     
 })
 
-exports.user_update_post
+exports.user_update_post = [
+    body('username', "Username already exists").custom( async value => {
+        const existingUser = await User.findOne( {username: value})
+        if (existingUser) {
+            throw new Error('Username already exists. Please choose another one.')
+        }
+    }),
+    body('password', 'Password does not match').custom( async (value, {req}) => {
+        const user = await User.findOne({_id: req.body.id})
+        try {
+          const match = await bcrypt.compare(value, user.password)
+          if (!match) {
+            throw new Error('Password is incorrect')
+          }
+        } catch(err) {
+          throw new Error(err)
+    }
+}),
+    body('username', 'Username must be between 2-20 characters.').trim().isLength({min: 2, max:20}).escape(),
+    asyncHandler ( async (req, res, next) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            res.status(400).json({ errors: errors.array()})
+            return
+        } else {
+            const newUser = await User.findOneAndUpdate( {_id: req.body.id}, {username: req.body.username})
+            res.status(200).json({ user: newUser})
+        }
+    })
+]
 
 exports.user_delete_get
 

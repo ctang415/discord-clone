@@ -7,6 +7,7 @@ const passport = require('passport')
 const session = require('express-session')
 const bodyParser = require('body-parser')
 const indexRouter = require('./routes/index')
+const usersRouter = require('./routes/users')
 
 mongoose.connect(`${process.env.mongodb}`, { useUnifiedTopology: true, useNewUrlParser: true });
 const db = mongoose.connection;
@@ -26,6 +27,7 @@ app.use(passport.session())
 
 
 app.use('/', indexRouter)
+app.use('/users', usersRouter)
 
 app.use(function(req, res, next) {
     res.locals.user = req.user || null;
