@@ -62,7 +62,8 @@ router.get('/logout', async (req, res, next) => {
 router.post('/logout', function(req, res, next){
     req.logout( async function(err) {
       if (err) { return next(err); }
-        const limitedUser = await User.findOneAndUpdate( {email: username}, {online: false})
+        await User.findOneAndUpdate( {email: req.body.username}, {online: false})
+        res.status(200).json({success: true})
     });
 })
 

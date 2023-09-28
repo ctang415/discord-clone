@@ -6,6 +6,7 @@ import StyledButton from "./styled/styledbutton"
 import SideBar from "./sidebar"
 import Friends from "./friends"
 import { useState, useEffect } from "react"
+import UserSettings from "./usersettings"
 
 const Home = () => {
     const [ email, setEmail ] = useState('')
@@ -41,6 +42,7 @@ const Home = () => {
         return (
             <> 
                 <div style={{ display: 'flex', flexDirection: 'row', gap: '1em'}}>
+                    <UserSettings/>
                     <SideBar/>
                     <Friends/>
                 </div>
