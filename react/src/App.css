@@ -5,7 +5,7 @@ body {
 }
   
   .modal-content {
-    padding: 3em;
+    display: flex;
     position: fixed; /* Stay in place */
     z-index: 100; /* Sit on top */
     background-color: #424549;

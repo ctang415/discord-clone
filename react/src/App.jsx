@@ -8,8 +8,6 @@ function App() {
   const [login, setLogin] = useState(false)
   const [ friends, setFriends ] = useState([])
   const [ userData, setUserData ] = useState([])
-  
-  
 
   const logOut = async (email) => {
     const username = {  username: email }

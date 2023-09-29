@@ -5,8 +5,10 @@ import Discord from "./styled/avatar"
 import StyledButton from "./styled/styledbutton"
 import StyledUi from "./styled/styledui"
 import Modal from "./modal"
+import MyProfile from "./myprofile"
+import MyAccount from "./myaccount"
 
-const StyledP = styled.p`
+export const StyledP = styled.p`
     cursor: pointer;
     padding: 0.5em;
 
@@ -20,7 +22,7 @@ export const StyledUserUi = styled(StyledUi)`
     justify-content: space-between;
 `
 
-const StyledUserButton = styled.button`
+export const StyledUserButton = styled.button`
     color: white;
     background-color: grey;
     border: none;
@@ -29,11 +31,22 @@ const StyledUserButton = styled.button`
     padding-left: 1em;
     padding-right: 1em;
     border-radius: 0.2em;
+    cursor: pointer;
 `
 
 const UserSettings = () => {
-    const { userSettings, setUserSettings, logOut, userData} = useContext(LoginContext)
+    const { userSettings, userData} = useContext(LoginContext)
     const [ modal, setModal ] = useState(false)
+    const [ profileEdit, setProfileEdit] = useState(false)
+    const [ changes, setChanges ] = useState(false)
+    const [ displayName, setDisplayName] = useState(userData[0].display_name)
+    const [ about, setAbout ] = useState(userData[0].about_me)
+
+    const clearChanges = () => {
+        setDisplayName(userData[0].display_name)
+        setAbout(userData[0].about_me)
+        setChanges(false)
+    }
 
     useEffect(() => {
         console.log(userSettings) 
@@ -43,54 +56,11 @@ const UserSettings = () => {
         return (
             <div className="modal-content">
                 <Modal modal={modal} setModal={setModal} />
-                <div style= {{display: 'flex', flexDirection: 'row', margin: '1%', gap: '3em'}}>
-                    <div style={{ display: 'flex', flexDirection: 'column', padding: '0.5em'}}>
-                        <h5>USER SETTINGS</h5>
-                        <StyledP>My Account</StyledP>
-                        <StyledP>Profiles</StyledP>
-                        <StyledP onClick={() => logOut(userData[0].email)}>Log Out</StyledP>   
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '80%', height: '80vh', overflow: 'scroll'}}>
-                        <StyledUserUi>
-                            <div><h2 style={{color: 'white'}}>My Account</h2></div>
-                            <div className="close" onClick={() => setUserSettings(false)}>&times;</div>
-                        </StyledUserUi>
-                        <div style={{ display: 'flex', flexDirection: 'column', padding: '1.5em', backgroundColor: '#282b30'}}>
-                            <StyledUserUi>
-                                <div style={{display: 'flex', flexDirection: 'row', gap: '1em'}}>
-                                    <Discord src={userData[0].avatar_url}/>
-                                    <h5>{userData[0].display_name}</h5>
-                                </div>
-                                <div>
-                                    <StyledButton>Edit User Profile</StyledButton>
-                                </div>
-                            </StyledUserUi>
-                            <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#36393e', padding: '1em'}}>
-                                <h6>DISPLAY NAME</h6>
-                                <StyledUserUi><p style={{color: 'white'}}>{userData[0].display_name}</p>
-                                    <div><StyledUserButton>Edit</StyledUserButton></div>
-                                </StyledUserUi>
-                                <h6>USERNAME</h6>
-                                <StyledUserUi>
-                                    <p style={{ color: 'white'}}>{userData[0].username}</p>
-                                    <div><StyledUserButton onClick={()=> setModal(true)}>Edit</StyledUserButton></div>
-                                </StyledUserUi>
-                                <h6>EMAIL</h6>
-                                <StyledUserUi>
-                                    <p style={{color: 'white'}}>{userData[0].email}</p>
-                                    <div><StyledUserButton>Edit</StyledUserButton></div>
-                                </StyledUserUi>
-                            </div>
-                        </div>
-                        <div>
-                            <h3>Password and Authentication</h3>
-                            <div>
-                                <StyledButton>Change Password</StyledButton>
-                            </div>
-                                <h5>ACCOUNT REMOVAL</h5>
-                                <button style={{ color: 'white', border: '1px solid red', padding: '0.5em', backgroundColor: '#424549'}}>Delete Account</button>
-                            </div>
-                        </div>
+                <div style= {{display: 'flex', flexDirection: 'row', width: '100%', gap: '3em',}}>
+                    <MyProfile clearChanges={clearChanges}
+                    setProfileEdit={setProfileEdit} profileEdit={profileEdit}/>
+                    <MyAccount setChanges={setChanges} changes={changes} setAbout={setAbout} displayName={displayName} setDisplayName={setDisplayName}
+                    setModal={setModal} setProfileEdit={setProfileEdit} profileEdit={profileEdit} about={about}/>
                     </div>
                 </div>
         )

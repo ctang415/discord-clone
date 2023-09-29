@@ -5,4 +5,6 @@ const user_controller = require('../controllers/usercontroller')
 
 router.post('/update', user_controller.user_update_post)
 
+router.post('/delete', user_controller.user_delete_post)
+
 module.exports = router

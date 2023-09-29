@@ -31,6 +31,8 @@ const Home = () => {
                 setLogin(true)
                 setUserData([data.data])
                 setFriends(data.data.friends)
+                setEmail('')
+                setPassword('')
                 console.log(data)
             }
         } catch (err) {

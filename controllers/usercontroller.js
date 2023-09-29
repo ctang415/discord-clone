@@ -119,4 +119,13 @@ exports.user_update_post = [
 
 exports.user_delete_get
 
-exports.user_delete_post
+exports.user_delete_post = async (req, res, next ) => {
+    const user = await User.findById(req.body.id).exec()
+    if (!user) {
+        res.status(400).json({error: 'User does not exist'})
+        return
+    } else {
+        await User.findByIdAndRemove(req.body.id)
+        res.status(200).json({success: true})
+    }
+}
