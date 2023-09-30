@@ -13,10 +13,25 @@ export const StyledCancel = styled.p`
 `
 
 const Modal = ( {modal, setModal} ) => {
-    const {userData} = useContext(LoginContext);
+    const { setUserData, userData} = useContext(LoginContext);
     const [ username, setUsername ] = useState(userData[0].username)
     const [ password, setPassword] = useState('')
     const [ error, setError] = useState([])
+
+    const fetchUser = async () => {
+        try {
+            const response = await fetch ('http://localhost:3000/user-detail')
+            if (!response.ok) {
+                throw await response.json()
+            }
+            const data = await response.json()
+            if (response.status === 200) {
+                setUserData([data.data])
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
     
     const handleForm = async (e) => {
         e.preventDefault()
@@ -33,6 +48,8 @@ const Modal = ( {modal, setModal} ) => {
             if (response.status === 200) {
                 alert('Username successfully updated!')
                 setModal(false)
+                setPassword('')
+                fetchUser()
             }
         } catch (err) {
             setError(err.errors)

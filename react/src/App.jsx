@@ -25,6 +25,10 @@ function App() {
       }
   }
 
+  useEffect(() => {
+    console.log(userData) 
+  }, [userData])
+
   return (
     <>
       <LoginContext.Provider value={{ login, setLogin, logOut, friends, setFriends, userData, setUserData, userSettings, setUserSettings}}>

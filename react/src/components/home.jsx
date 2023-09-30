@@ -20,8 +20,8 @@ const Home = () => {
         const loginData = { email: email, password: password}
         try {
             const response = await fetch ('http://localhost:3000/login', {
-                method: 'POST',
-                headers: {"Content-Type": "application/json"}, body: JSON.stringify(loginData)
+                method: 'POST', credentials: 'include',
+                headers: {"Content-Type": "application/json", "Accept": 'application/json'}, body: JSON.stringify(loginData)
             })
             if (!response.ok) {
                 throw await response.json()

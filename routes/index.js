@@ -31,18 +31,31 @@ passport.use(
     })
   );
 
-passport.serializeUser(function(user, done) {
-    done(null, user.id);
+passport.serializeUser(function(user, done) { 
+  console.log('serialize')
+  console.log(user.id)
+  console.log('end seralize')
+  done(null, user.id);
   });
   
-  passport.deserializeUser(async function(id, done) {
+passport.deserializeUser(async function(id, done) {
+  console.log('error deserialize')
+  console.log(id)
+  console.log('error deserialize')
     try {
+      console.log(id)
       const user = await User.findById(id);
+      console.log('DESERIALIZE!!!!')
       done(null, user);
     } catch(err) {
       done(err);
     };
   });
+
+router.get('/', function (req, res, next) {
+  console.log(req.user)
+  console.log(req.session)
+})
 
 router.get('/login', (req, res, next) => {
     res.status(200).json('hello')
@@ -52,7 +65,12 @@ router.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info, status) {
       if (err) { return console.log(err) }
       if (!user) { return res.status(400).json({error: info}) }
-      res.status(200).json({ success: true, data: user})
+      req.login(user, function(err) {
+        if (err) { return next(err); }
+        console.log('is authenticated?: ' + req.isAuthenticated());
+        req.user = user;
+        return res.status(200).json({ success: true, data: user, id: user})
+      })
     })(req, res, next);
 })
 

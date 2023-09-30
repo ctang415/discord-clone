@@ -5,10 +5,12 @@ const { isValidObjectId } = require('mongoose')
 const bcrypt = require('bcryptjs')
 
 exports.user_detail = asyncHandler ( async (req, res, next) => {
+    console.log(req.user)
+    res.json(req.user)
     const [ user, limitedUser ] = await Promise.all (
         [ 
-            User.findById(req.params.id).populate('chats', 'friends').exec(),
-            User.findById(req.params.id).select("-email", "-password", "-friends", "-chats").exec()
+            User.findById(req.body.id).populate('chats', 'friends').exec(),
+            User.findById(req.body.id).select("-email", "-password", "-friends", "-chats").exec()
         ]
         )
         /*
@@ -17,7 +19,7 @@ exports.user_detail = asyncHandler ( async (req, res, next) => {
 
         }
         */
-    if (isValidObjectId(req.params.id) === false) {
+    if (isValidObjectId(req.body.id) === false) {
         res.status(404).json({error: "User does not exist"})
         return
     }
@@ -25,7 +27,7 @@ exports.user_detail = asyncHandler ( async (req, res, next) => {
         res.status(404).json({error: "User not found"})
         return
     }
-    if (req.params.id === req.user) {
+    if (req.body.id === req.user) {
         res.status(200).json({user_detail: user})
     } else {
         res.status(200).json({user_detail: limitedUser})
