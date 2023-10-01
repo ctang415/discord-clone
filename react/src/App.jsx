@@ -8,6 +8,7 @@ function App() {
   const [login, setLogin] = useState(false)
   const [ friends, setFriends ] = useState([])
   const [ userData, setUserData ] = useState([])
+  const [ profileEdit, setProfileEdit] = useState(false)
 
   const logOut = async (email) => {
     const username = {  username: email }
@@ -18,6 +19,7 @@ function App() {
         await response.json()
         if (response.status === 200) {
           setLogin(false)  
+          setUserSettings(false)
           alert('Successfully logged out!')
         }
       } catch (err) {
@@ -25,13 +27,32 @@ function App() {
       }
   }
 
+  const fetchUser = async () => {
+    try {
+        const response = await fetch ('http://localhost:3000/users/user-detail', {
+            credentials: 'include'
+        })
+        if (!response.ok) {
+            throw await response.json()
+        }
+        const data = await response.json()
+        if (response.status === 200) {
+            console.log(data)
+            setUserData([data.user_detail])
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
   useEffect(() => {
     console.log(userData) 
   }, [userData])
 
   return (
     <>
-      <LoginContext.Provider value={{ login, setLogin, logOut, friends, setFriends, userData, setUserData, userSettings, setUserSettings}}>
+      <LoginContext.Provider value={{ setProfileEdit, profileEdit,
+        fetchUser, login, setLogin, logOut, friends, setFriends, userData, setUserData, userSettings, setUserSettings}}>
         <Outlet/>
       </LoginContext.Provider>
     </>

@@ -16,7 +16,7 @@ const StyledImg = styled.img`
 
 const LoggedUser = () => {
     const { userData, setUserSettings } = useContext(LoginContext)
-
+   
     return (
         <>
             <div style={{ backgroundColor: '#1e2124', position: 'fixed', bottom: '0', minWidth: '15vw', maxWidth: '15vw'}}>

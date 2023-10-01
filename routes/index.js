@@ -32,16 +32,10 @@ passport.use(
   );
 
 passport.serializeUser(function(user, done) { 
-  console.log('serialize')
-  console.log(user.id)
-  console.log('end seralize')
   done(null, user.id);
   });
   
 passport.deserializeUser(async function(id, done) {
-  console.log('error deserialize')
-  console.log(id)
-  console.log('error deserialize')
     try {
       console.log(id)
       const user = await User.findById(id);
@@ -54,7 +48,6 @@ passport.deserializeUser(async function(id, done) {
 
 router.get('/', function (req, res, next) {
   console.log(req.user)
-  console.log(req.session)
 })
 
 router.get('/login', (req, res, next) => {

@@ -2,8 +2,8 @@ import { useContext } from "react"
 import { LoginContext } from "./logincontext"
 import { StyledP } from "./usersettings"
 
-const MyProfile = ({profileEdit, setProfileEdit, clearChanges}) => {
-    const {userData, logOut} = useContext(LoginContext)
+const MyProfile = ({clearChanges}) => {
+    const {userData, logOut, setProfileEdit, profileEdit} = useContext(LoginContext)
     const handleChange = (boolean) => {
             clearChanges()
             setProfileEdit(boolean)

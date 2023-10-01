@@ -12,18 +12,19 @@ export const StyledCancel = styled.p`
     }
 `
 
-const Modal = ( {modal, setModal} ) => {
+const PasswordModal = ( {setPasswordModal, passwordModal} ) => {
     const { fetchUser, setUserData, userData} = useContext(LoginContext);
-    const [ username, setUsername ] = useState(userData[0].username)
     const [ password, setPassword] = useState('')
+    const [ newPassword, setNewPassword] = useState('')
+    const [ confirmPassword, setConfirmPassword ] = useState('')
     const [ error, setError] = useState([])
 
     const handleForm = async (e) => {
         e.preventDefault()
-        const update = { id: userData[0]._id, username: username, password: password }
+        const update = { id: userData[0]._id, password: password, newPassword: newPassword, confirmPassword: confirmPassword }
         setError([])
         try {
-            const response = await fetch ('http://localhost:3000/users/update', {
+            const response = await fetch ('http://localhost:3000/users/update-password', {
                 method: 'POST', credentials: 'include', headers: {'Content-Type': 'application/json', 
                 'Accept': 'application/json'}, body: JSON.stringify(update) 
             })
@@ -32,9 +33,11 @@ const Modal = ( {modal, setModal} ) => {
             }
             await response.json()
             if (response.status === 200) {
-                alert('Username successfully updated!')
-                setModal(false)
+                alert('Password successfully updated!')
+                setPasswordModal(false)
                 setPassword('')
+                setNewPassword('')
+                setConfirmPassword('')
                 fetchUser()
             }
         } catch (err) {
@@ -43,26 +46,30 @@ const Modal = ( {modal, setModal} ) => {
     }
 
     const closeModal = () => {
-        setModal(false)
+        setPasswordModal(false)
         setError([])
         setPassword('')
-        setUsername(userData[0].username)
+        setNewPassword('')
+        setConfirmPassword('')
     }
 
-    if (modal) {
+    if (passwordModal) {
         return (
         <div id="myModal" className="modal">
             <div className="modal-user-content">
             <div className="close" style={{ float: 'right'}} onClick={closeModal}>&times;</div>
-                <h3 style={{textAlign: 'center', color: 'white'}}>Change your username</h3>
-                <p style={{ textAlign: 'center'}}>Enter a new username and your existing password.</p>
+                <h3 style={{textAlign: 'center', color: 'white'}}>Update your password</h3>
+                <p style={{ textAlign: 'center'}}>Enter your current password and a new password.</p>
                 <form onSubmit={handleForm} style={{display: 'flex', flexDirection: 'column', gap: '1em'}}>
-                    <label htmlFor="username" style={{ fontWeight: 'bold', fontSize: '1.75vh'}}>USERNAME</label>
-                    <StyledInput type="string" name="username" defaultValue={userData[0].username} style={{ color: 'white'}}
-                    onChange={(e) => setUsername(e.target.value)} value={username} required></StyledInput>
                     <label htmlFor="password" style={{ fontWeight: 'bold', fontSize: '1.75vh'}}>CURRENT PASSWORD</label>
-                    <StyledInput type="password" name="password" value={password} style={{ color: 'white'}}
-                    onChange={(e) => setPassword(e.target.value)} required></StyledInput>
+                    <StyledInput type="password" name="password" style={{ color: 'white'}}
+                    onChange={(e) => setPassword(e.target.value)} value={password} required></StyledInput>
+                    <label htmlFor="newPassword" style={{ fontWeight: 'bold', fontSize: '1.75vh'}}>NEW PASSWORD</label>
+                    <StyledInput type="password" name="newPassword" value={newPassword} style={{ color: 'white'}}
+                    onChange={(e) => setNewPassword(e.target.value)} required></StyledInput>
+                    <label htmlFor="confirmPassword" style={{ fontWeight: 'bold', fontSize: '1.75vh'}}>CONFIRM NEW PASSWORD</label>
+                    <StyledInput type="password" name="confirmPassword" value={confirmPassword} style={{ color: 'white'}}
+                    onChange={(e) => setConfirmPassword(e.target.value)} required></StyledInput>
                     <div style={{display:'flex', justifyContent:'flex-end', gap: '1em'}}>
                     <StyledCancel onClick={closeModal}>Cancel</StyledCancel>
                     <StyledButton type="submit">Done</StyledButton>
@@ -81,4 +88,4 @@ const Modal = ( {modal, setModal} ) => {
     }
 }
 
-export default Modal
+export default PasswordModal

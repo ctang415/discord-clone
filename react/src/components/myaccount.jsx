@@ -6,6 +6,7 @@ import StyledButton from "./styled/styledbutton"
 import StyledInput from "./styled/styledinput"
 import { StyledP, StyledUserButton, StyledUserUi } from "./usersettings"
 import {styled} from 'styled-components'
+import { decode } from 'html-entities'
 
 const StyledTextArea = styled.textarea`
     border: none; 
@@ -15,9 +16,9 @@ const StyledTextArea = styled.textarea`
 }
 `
 
-const MyAccount = ({setModal, setProfileEdit, profileEdit, displayName, setDisplayName, about, setAbout,
-    changes, setChanges}) => {
-    const {setUserSettings, userData, logOut, setLogin } = useContext(LoginContext)
+const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
+    changes, setChanges, setPasswordModal, passwordModal}) => {
+    const {fetchUser, setProfileEdit, profileEdit, setUserSettings, setUserData, userData, logOut, setLogin } = useContext(LoginContext)
     const  [ error, setError] = useState([])
 
     const handleReset = () => {
@@ -29,6 +30,7 @@ const MyAccount = ({setModal, setProfileEdit, profileEdit, displayName, setDispl
     const closeModal = () => {
         setUserSettings(false)
         setProfileEdit(false)
+        setPasswordModal(false)
         setDisplayName(userData[0].display_name)
         setAbout(userData[0].about_me)
     }
@@ -37,7 +39,8 @@ const MyAccount = ({setModal, setProfileEdit, profileEdit, displayName, setDispl
         const deleteAccount = {id: userData[0]._id}
         try {
             const response = await fetch ('http://localhost:3000/users/delete', {
-                method: 'POST', headers: {'Content-type': 'application/json'}, body: JSON.stringify(deleteAccount)
+                method: 'POST', credentials: 'include',
+                headers: {'Content-type': 'application/json', 'Accept': 'application/json'}, body: JSON.stringify(deleteAccount)
             })
             if (!response.ok) {
                 throw await response.json()
@@ -53,11 +56,13 @@ const MyAccount = ({setModal, setProfileEdit, profileEdit, displayName, setDispl
         }
     }
 
-    const handleChanges = async () => {
+    const handleChanges = async (e) => {
+        e.preventDefault()
         const newChanges = { display_name: displayName, about_me: about, id: userData[0]._id}
         try {
-            const response = await fetch ('http://localhost:3000/update', {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(newChanges)
+            const response = await fetch ('http://localhost:3000/users/update-more', {
+                method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, 
+                credentials: 'include', body: JSON.stringify(newChanges)
             })
             if (!response.ok) {
                 throw await response.json()
@@ -65,6 +70,7 @@ const MyAccount = ({setModal, setProfileEdit, profileEdit, displayName, setDispl
             await response.json()
             if (response.status === 200) {
                 alert('Update successful!')
+                fetchUser()
             }
         } catch (err) {
             console.log(err)
@@ -72,12 +78,13 @@ const MyAccount = ({setModal, setProfileEdit, profileEdit, displayName, setDispl
         }
     }
 
+
     useEffect( ()=> {
-        if (displayName !== userData[0].display_name || about !== userData[0].about_me)
+        if (displayName !== userData[0].display_name || about !== userData[0].about_me) {
             setChanges(true)
-            console.log(displayName)
-            console.log(about)
-            console.log(changes)
+        } else {
+            setChanges(false)
+        }
     }, [displayName, about])
     
     if (!profileEdit) {
@@ -118,7 +125,7 @@ const MyAccount = ({setModal, setProfileEdit, profileEdit, displayName, setDispl
         <div>
             <h3>Password and Authentication</h3>
             <div>
-                <StyledButton>Change Password</StyledButton>
+                <StyledButton onClick={() => setPasswordModal(true)}>Change Password</StyledButton>
             </div>
                 <h5>ACCOUNT REMOVAL</h5>
                 <button onClick={()=> handleDelete()} style={{ cursor: 'pointer', color: 'white', border: '1px solid red', padding: '0.5em', backgroundColor: '#424549'}}>Delete Account</button>
@@ -131,14 +138,13 @@ const MyAccount = ({setModal, setProfileEdit, profileEdit, displayName, setDispl
                 <div><h2 style={{color: 'white'}}>Profiles</h2></div>
                 <div className="close" onClick={() => closeModal()}>&times;</div>
             </StyledUserUi>
-            <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#36393e', padding: '1em'}}>
+            <form onSubmit={handleChanges}>
+                <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#36393e', padding: '1em'}}>
                 <h5>DISPLAY NAME</h5>
                 <StyledUserUi>
-                    <form>
                     <StyledInput type="text" defaultValue={userData[0].display_name} name="display_name" onChange={(e) => setDisplayName(e.target.value)} 
-                    style={{color: 'white'}} value={displayName}>  
+                    style={{color: 'white'}} value={displayName}>
                     </StyledInput>
-                    </form>
                 </StyledUserUi>
                 <h5>AVATAR</h5>
                 <div style={{ display: 'flex', flexDirection: 'row', gap: '1em'}}>
@@ -147,11 +153,13 @@ const MyAccount = ({setModal, setProfileEdit, profileEdit, displayName, setDispl
                 </div>
                 <h5>ABOUT ME</h5>
                 <StyledTextArea style={{ color: 'white'}} defaultValue={userData[0].about_me} name="about_me"
-                value={about} onChange={(e) => setAbout(e.target.value)}></StyledTextArea>
+                value={decode(about)} onChange={(e) => setAbout(e.target.value)}></StyledTextArea>
             </div>
             <div style={ changes ? { display: 'flex' } : {display: 'none'} }>
-                <StyledP onClick={() => handleReset()}>Reset</StyledP> <StyledButton>Save Changes</StyledButton>
+                <StyledP onClick={() => handleReset()}>Reset</StyledP> 
+                <StyledButton type='submit'>Save Changes</StyledButton>
             </div>
+            </form>
             </div>    
         )
     }

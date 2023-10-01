@@ -10,6 +10,9 @@ export const LoginContext = createContext(
         friends: [],
         setFriends: () => {},
         setLogin: () => {},
-        logOut: () => {}
+        logOut: () => {},
+        fetchUser: () => {},
+        setPasswordModal: () => {},
+        passwordModal: null,
     }
 )

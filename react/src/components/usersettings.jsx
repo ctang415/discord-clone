@@ -5,6 +5,7 @@ import Discord from "./styled/avatar"
 import StyledButton from "./styled/styledbutton"
 import StyledUi from "./styled/styledui"
 import Modal from "./modal"
+import PasswordModal from './passwordmodal'
 import MyProfile from "./myprofile"
 import MyAccount from "./myaccount"
 
@@ -37,7 +38,7 @@ export const StyledUserButton = styled.button`
 const UserSettings = () => {
     const { userSettings, userData} = useContext(LoginContext)
     const [ modal, setModal ] = useState(false)
-    const [ profileEdit, setProfileEdit] = useState(false)
+    const [ passwordModal, setPasswordModal ] = useState(false)
     const [ changes, setChanges ] = useState(false)
     const [ displayName, setDisplayName] = useState(userData[0].display_name)
     const [ about, setAbout ] = useState(userData[0].about_me)
@@ -48,19 +49,15 @@ const UserSettings = () => {
         setChanges(false)
     }
 
-    useEffect(() => {
-        console.log(userSettings) 
-    }, [])
-    
     if (userSettings) {
         return (
             <div className="modal-content">
                 <Modal modal={modal} setModal={setModal} />
+                <PasswordModal passwordModal={passwordModal} setPasswordModal={setPasswordModal}/>
                 <div style= {{display: 'flex', flexDirection: 'row', width: '100%', gap: '3em',}}>
-                    <MyProfile clearChanges={clearChanges}
-                    setProfileEdit={setProfileEdit} profileEdit={profileEdit}/>
+                    <MyProfile clearChanges={clearChanges}/>
                     <MyAccount setChanges={setChanges} changes={changes} setAbout={setAbout} displayName={displayName} setDisplayName={setDisplayName}
-                    setModal={setModal} setProfileEdit={setProfileEdit} profileEdit={profileEdit} about={about}/>
+                    setModal={setModal} about={about} setPasswordModal={setPasswordModal} passwordModal={passwordModal} />
                     </div>
                 </div>
         )

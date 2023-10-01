@@ -6,20 +6,16 @@ const bcrypt = require('bcryptjs')
 
 exports.user_detail = asyncHandler ( async (req, res, next) => {
     console.log(req.user)
-    res.json(req.user)
-    const [ user, limitedUser ] = await Promise.all (
+    console.log('user detail')
+    const user = await User.findById(req.user.id).exec()
+    /*const [ user, limitedUser ] = await Promise.all (
         [ 
-            User.findById(req.body.id).populate('chats', 'friends').exec(),
+            User.findById(req.user.id).populate('chats', 'friends').exec(),
             User.findById(req.body.id).select("-email", "-password", "-friends", "-chats").exec()
         ]
         )
-        /*
-        // if logged in
-        if (req.user) {
-
-        }
-        */
-    if (isValidObjectId(req.body.id) === false) {
+      */
+    if (isValidObjectId(req.user.id) === false) {
         res.status(404).json({error: "User does not exist"})
         return
     }
@@ -27,11 +23,7 @@ exports.user_detail = asyncHandler ( async (req, res, next) => {
         res.status(404).json({error: "User not found"})
         return
     }
-    if (req.body.id === req.user) {
         res.status(200).json({user_detail: user})
-    } else {
-        res.status(200).json({user_detail: limitedUser})
-    }
 })
 
 exports.user_create_get = asyncHandler ( async (req, res, next) => {
@@ -84,10 +76,6 @@ exports.user_create_post = [
     })
 ]
 
-exports.user_update_get = asyncHandler ( async (req, res, next) => {
-    
-})
-
 exports.user_update_post = [
     body('username', "Username already exists").custom( async value => {
         const existingUser = await User.findOne( {username: value})
@@ -119,7 +107,58 @@ exports.user_update_post = [
     })
 ]
 
-exports.user_delete_get
+exports.user_update_post_more = [
+    body('display_name', 'Display name must be between 1-20 characters.').trim().isLength({min: 1}).isLength({max:20}).escape(),
+    body('about_me', 'About me cannot exceed 100 characters.').trim().isLength({max: 100}).escape(),
+    asyncHandler( async (req, res, next) => {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()) {
+            res.status(400).json({errors: errors.array()})
+            return
+        } else {
+            const newUser = await User.findByIdAndUpdate(req.body.id, 
+                {display_name: req.body.display_name, about_me: req.body.about_me,})
+            res.status(200).json({ user: newUser})
+        }
+    })
+]
+
+exports.user_update_password_post = [
+    body('password', 'Password does not match').custom( async (value, {req}) => {
+        const user = await User.findOne({_id: req.body.id})
+        try {
+          const match = await bcrypt.compare(value, user.password)
+          if (!match) {
+            throw new Error('Password is incorrect')
+          }
+        } catch(err) {
+          throw new Error(err)
+    }
+}),   
+    body('confirmPassword', 'Please confirm your password.').custom((value, { req }) => {
+      return value === req.body.newPassword;
+    }),
+    body('newPassword', 'Password must be at least 2 characters.').trim().isLength({min: 2}).escape(),
+    asyncHandler( async (req, res, next) => {
+        try {
+            bcrypt.hash(req.body.newPassword, 10, async (err, hash) => {
+            if (err) {
+                return err
+            }
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                res.status(400).json({errors: errors.array()})
+                return
+            } else {
+                const newUser = await User.findByIdAndUpdate(req.body.id, {password: hash})
+                res.status(200).json({user: newUser})
+            }
+            })
+        } catch(err) {
+        throw new Error(err)
+        }
+    })
+]
 
 exports.user_delete_post = async (req, res, next ) => {
     const user = await User.findById(req.body.id).exec()
