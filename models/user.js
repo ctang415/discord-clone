@@ -10,7 +10,7 @@ const UserSchema = new Schema (
         creation: { type: Date, default: Date.now()},
         display_name: { type: String, minLength: 1, maxLength: 20, required: true},
         about_me: { type: String, default: '', maxLength: 100},
-        friends: [ { type: Schema.Types.ObjectId, ref: 'User'} ],
+        friends: [ {type: Schema.Types.ObjectId, ref: 'Friend' } ],
         avatar_url: { type: String },
         chats: [ {type: Schema.Types.ObjectId, ref: 'Chat'} ],
         online: { type: Boolean, default: false}

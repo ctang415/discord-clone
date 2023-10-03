@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs')
 exports.user_detail = asyncHandler ( async (req, res, next) => {
     console.log(req.user)
     console.log('user detail')
-    const user = await User.findById(req.user.id).exec()
+    const user = await User.findById(req.user.id).populate('chats', 'friends').exec()
     /*const [ user, limitedUser ] = await Promise.all (
         [ 
             User.findById(req.user.id).populate('chats', 'friends').exec(),
@@ -158,6 +158,39 @@ exports.user_update_password_post = [
         throw new Error(err)
         }
     })
+]
+
+exports.user_update_email_post = [
+    body('password', 'Password does not match').custom( async (value, {req}) => {
+        const user = await User.findOne({_id: req.body.id})
+        try {
+          const match = await bcrypt.compare(value, user.password)
+          if (!match) {
+            throw new Error('Password is incorrect')
+          }
+        } catch(err) {
+          throw new Error(err)
+    }
+}),   
+    body('email', "Email already exists").custom( async value => {
+        const existingUser = await User.findOne( {email: value})
+        if (existingUser) {
+            throw new Error('Email already exists')
+        }
+    }),
+    body('confirmPassword', 'Please confirm your password.').custom((value, { req }) => {
+        return value === req.body.password;
+      }),
+      asyncHandler( async (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.status(400).json({errors: errors.array()})
+            return
+        } else {
+            const newUser = await User.findByIdAndUpdate(req.body.id, {email : req.body.email})
+            res.status(200).json({user: newUser})
+        }
+      })
 ]
 
 exports.user_delete_post = async (req, res, next ) => {

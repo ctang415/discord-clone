@@ -17,7 +17,7 @@ const StyledTextArea = styled.textarea`
 `
 
 const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
-    changes, setChanges, setPasswordModal, passwordModal}) => {
+    changes, setChanges, setPasswordModal, passwordModal, setEmailModal, emailModal}) => {
     const {fetchUser, setProfileEdit, profileEdit, setUserSettings, setUserData, userData, logOut, setLogin } = useContext(LoginContext)
     const  [ error, setError] = useState([])
 
@@ -118,7 +118,7 @@ const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
                 <h6>EMAIL</h6>
                 <StyledUserUi>
                     <p style={{color: 'white'}}>{userData[0].email}</p>
-                    <div><StyledUserButton>Edit</StyledUserButton></div>
+                    <div><StyledUserButton onClick={()=> setEmailModal(true)}>Edit</StyledUserButton></div>
                 </StyledUserUi>
             </div>
         </div>

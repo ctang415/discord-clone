@@ -10,6 +10,8 @@ router.post('/update-more', user_controller.user_update_post_more)
 
 router.post('/update-password', user_controller.user_update_password_post)
 
+router.post('/update-email', user_controller.user_update_email_post)
+
 router.post('/delete', user_controller.user_delete_post)
 
 module.exports = router

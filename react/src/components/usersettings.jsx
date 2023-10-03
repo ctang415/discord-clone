@@ -6,6 +6,7 @@ import StyledButton from "./styled/styledbutton"
 import StyledUi from "./styled/styledui"
 import Modal from "./modal"
 import PasswordModal from './passwordmodal'
+import EmailModal from './emailmodal'
 import MyProfile from "./myprofile"
 import MyAccount from "./myaccount"
 
@@ -39,6 +40,7 @@ const UserSettings = () => {
     const { userSettings, userData} = useContext(LoginContext)
     const [ modal, setModal ] = useState(false)
     const [ passwordModal, setPasswordModal ] = useState(false)
+    const [emailModal, setEmailModal] = useState(false)
     const [ changes, setChanges ] = useState(false)
     const [ displayName, setDisplayName] = useState(userData[0].display_name)
     const [ about, setAbout ] = useState(userData[0].about_me)
@@ -54,10 +56,12 @@ const UserSettings = () => {
             <div className="modal-content">
                 <Modal modal={modal} setModal={setModal} />
                 <PasswordModal passwordModal={passwordModal} setPasswordModal={setPasswordModal}/>
+                <EmailModal emailModal={emailModal} setEmailModal={setEmailModal}/>
                 <div style= {{display: 'flex', flexDirection: 'row', width: '100%', gap: '3em',}}>
                     <MyProfile clearChanges={clearChanges}/>
                     <MyAccount setChanges={setChanges} changes={changes} setAbout={setAbout} displayName={displayName} setDisplayName={setDisplayName}
-                    setModal={setModal} about={about} setPasswordModal={setPasswordModal} passwordModal={passwordModal} />
+                    setModal={setModal} about={about} setPasswordModal={setPasswordModal} passwordModal={passwordModal} 
+                    emailModal={emailModal} setEmailModal={setEmailModal}/>
                     </div>
                 </div>
         )

@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const user_controller = require('../controllers/usercontroller')
+const friend_controller = require('../controllers/friendcontroller')
 const User = require('../models/user')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
@@ -81,5 +82,7 @@ router.post('/logout', function(req, res, next){
 router.get('/register', user_controller.user_create_get)
 
 router.post('/register', user_controller.user_create_post)
+
+router.post('/add-friend', friend_controller.friend_add_post)
 
 module.exports = router
