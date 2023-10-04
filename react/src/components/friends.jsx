@@ -5,9 +5,20 @@ import AddFriend from "./addfriend"
 
 const Friends = () => {
     const [ friend, setFriend ] = useState(false)
-    const friendFilter = [ {name: 'Online', function: () => setFriend(false)}, {name: 'All', function: () =>setFriend(false)}, 
-    {name: 'Pending'}, {name: 'Blocked'}]
+    const [ pending, setPending] = useState(false)
+    const changeFilter = () => {
+        setFriend(false)
+        setPending(false)
+    }
+    
+    const changeFriend = () => {
+        setFriend(true)
+        setPending(false)
+    }
 
+    const friendFilter = [ {name: 'Online', function: () => changeFilter()}, {name: 'All', function: () => setFriend(false)}, 
+    {name: 'Pending', function: () => setPending(true)}, {name: 'Blocked'}]
+    
     return (
         <>
         <div style={{ display: 'flex', flexDirection: 'column', width: '100%'}}>
@@ -22,11 +33,11 @@ const Friends = () => {
                         >{friend.name}</li>
                     )
                 })}
-                <button onClick={() => setFriend(true)} 
+                <button onClick={() => changeFriend()} 
                 style={{ backgroundColor: 'green', color: 'white', border: 'none'}}>Add Friend</button>
             </ul>
         </StyledNav>
-        <AddFriend friend={friend} />
+        <AddFriend friend={friend} pending={pending} />
         </div>
         </>
     )

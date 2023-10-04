@@ -30,7 +30,7 @@ const Home = () => {
             if (response.status === 200) {
                 setLogin(true)
                 setUserData([data.data])
-                setFriends(data.data.friends)
+                setFriends(data.data.friendsList)
                 setEmail('')
                 setPassword('')
                 console.log(data)

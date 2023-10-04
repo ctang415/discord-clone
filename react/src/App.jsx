@@ -39,6 +39,7 @@ function App() {
         if (response.status === 200) {
             console.log(data)
             setUserData([data.user_detail])
+            setFriends(data.data.friendsList)
         }
     } catch (err) {
         console.log(err)

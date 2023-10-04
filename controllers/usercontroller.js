@@ -7,7 +7,9 @@ const bcrypt = require('bcryptjs')
 exports.user_detail = asyncHandler ( async (req, res, next) => {
     console.log(req.user)
     console.log('user detail')
-    const user = await User.findById(req.user.id).populate('chats', 'friends').exec()
+    const user = await User.findById(req.user.id).populate('friendsList')
+    console.log(user)
+    console.log('user detail end')
     /*const [ user, limitedUser ] = await Promise.all (
         [ 
             User.findById(req.user.id).populate('chats', 'friends').exec(),

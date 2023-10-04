@@ -27,15 +27,18 @@ exports.friend_add_post = [
                 User.findOne( {username: req.body.username}),
                 User.findOne({ username: req.body.friendUsername})
             ])
-            console.log(myUser)
-            console.log(friendUser)
             const friend = new Friend (
                 {
-                    recipient: myUser.id,
-                    requester: friendUser.id,
+                    recipient: friendUser._id,
+                    requester: myUser._id,
                 }
             )
-            await friend.save()
+            const newFriend = await friend.save()
+            const [ user, fUser ] = await Promise.all
+            ([ 
+                User.findOneAndUpdate({ username: req.body.username}, { $push: { friendsList: newFriend._id} }),
+                User.findOneAndUpdate({ username: req.body.friendUsername}, { $push: {friendsList: newFriend._id}})
+            ])
             res.status(200).json({success: true})
         }
     })

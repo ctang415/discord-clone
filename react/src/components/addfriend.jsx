@@ -4,10 +4,11 @@ import StyledList from "./styled/styledlist"
 import { LoginContext } from "./logincontext"
 import StyledUl from "./styled/styledul"
 import {styled} from 'styled-components'
-import { useState, useContext } from "react"
+import { useState, useEffect, useContext } from "react"
 import Discord from "./styled/avatar"
 import StyledButton from "./styled/styledbutton"
-
+import ChatIcon from '../assets/chat.svg'
+import SettingsIcon from '../assets/settings.svg'
 
 export const StyledListFriend = styled(StyledList)`
     display: flex;
@@ -22,8 +23,8 @@ export const StyledListFriend = styled(StyledList)`
 } 
 `
 
-const AddFriend = ({friend}) => {
-    const { friends, userData } = useContext(LoginContext);
+const AddFriend = ({friend, pending}) => {
+    const { friends, userData, fetchUser } = useContext(LoginContext);
     const [ username, setUsername] = useState('')
     const [ error, setError ] = useState([])
 
@@ -42,22 +43,40 @@ const AddFriend = ({friend}) => {
             if (response.status === 200) {
                 alert('Request sent!')
                 setUsername('')
+                fetchUser()
             }
         } catch (err) {
-            console.log(err.errors)
             setError(err.errors)
         }
     }
 
-    if (friend) {
+    useEffect(() => {
+        console.log(friends)
+        console.log(userData[0])
+    }, [])
+
+    if (pending) {
+        return (
+            <div style={{ padding: '4vh'}}>
+            <h4 style={{color: 'white'}}>Pending</h4>
+            {friends.filter(x => x.status === 'Pending').map(user => {
+                return (
+                    <button>
+                        {user.requester.username === userData[0].username ? "PENDING REQUEST" : "Add" }
+                    </button>
+                )
+            })}
+            </div>
+        )
+        } else if (friend) {
     return (
         <div style={{ padding: '4vh'}}>
         <h4 style={{color: 'white'}}>ADD A FRIEND</h4>
         <form onSubmit={addFriend}>
-            <div style={{ display: 'flex', justifyContent: 'center'}}>
-                <StyledInput style={{padding: '0.5em', color: 'white'}} placeholder="You can add friends by their Discord username" 
+            <div style={{ display: 'flex', gap: '2em'}}>
+                <StyledInput style={{padding: '0.5em', color: 'white', width: '50%'}} placeholder="You can add friends by their Discord username" 
                 type="text" name="friendUsername" value={username} onChange={(e) => setUsername(e.target.value)} required></StyledInput>
-                <StyledButton type="submit">Send Friend Request</StyledButton>
+                <StyledButton style={{padding: '0.5em', borderRadius: '0.3em'}} type="submit">Send Friend Request</StyledButton>
             </div>
         </form>
         {error.map(err => {
@@ -68,6 +87,44 @@ const AddFriend = ({friend}) => {
         </div>
     )
     } else {
+        return (
+        <div style={{ padding: '4vh'}}>
+            <div style={{ display: 'flex', justifyContent: 'center'}}>
+                <StyledInput style={{padding: '0.5em', color: 'white'}} placeholder="Search" type="text"></StyledInput>
+            </div>
+            <h4>ONLINE - {friends.filter(x => x.status === 'Friends')}</h4>
+            <StyledUl>
+                {friends.filter(x => x.status === 'Friends').map(friend => {
+                    return (
+                        <StyledLink style={{display:'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}} 
+                        key={friend.name} to={`/chats/${friend.id}`}>
+                            <StyledListFriend>
+                                <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '1em'}}>
+                                    <Discord/>
+                                    {friend.name}
+                                </div>
+                                <div style={{display: 'flex', flexDirection: 'row', gap: '1em'}}>
+                                <div style={{backgroundColor: '#1e2124', borderRadius: '1em', padding: '0.5em'}}>
+                                    <img src={ChatIcon} alt="Chat Icon"/>
+                                </div>
+                                <div style={{backgroundColor: '#1e2124', borderRadius: '1em', padding: '0.5em'}}>
+                                    <img src={SettingsIcon} alt="Settings Icon"/>
+                                </div>
+                            </div>
+                            </StyledListFriend>
+                        </StyledLink>
+                    )
+                })}
+            </StyledUl>
+            </div>
+        )
+    }
+}
+
+export default AddFriend
+
+/*
+else {
         return (
         <div style={{ padding: '4vh'}}>
             <div style={{ display: 'flex', justifyContent: 'center'}}>
@@ -100,6 +157,4 @@ const AddFriend = ({friend}) => {
             </div>
         )
     }
-}
-
-export default AddFriend
+    */

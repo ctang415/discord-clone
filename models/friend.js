@@ -7,8 +7,8 @@ const FriendSchema = new Schema (
         requester: { type: Schema.Types.ObjectId, ref: 'User'},
         status: {
             type: String,
-            enum: [ 'Add', 'Requested', 'Pending', 'Friends'],
-            default: 'Add'
+            enum: [ 'Pending', 'Friends'],
+            default: 'Pending'
         }
     }
 )

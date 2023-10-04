@@ -3,6 +3,7 @@ const router = express.Router()
 const user_controller = require('../controllers/usercontroller')
 const friend_controller = require('../controllers/friendcontroller')
 const User = require('../models/user')
+const Friend = require('../models/friend')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcryptjs')
@@ -13,7 +14,7 @@ passport.use(
       }, async( username, password, done) => {
       try {
         const user = await User.findOne({ email: username });
-        if (!user) {
+         if (!user) {
             done(new Error('User does not exist'))
           return done(null, false, {message: "User does not exist" } );
         } else {
@@ -22,8 +23,9 @@ passport.use(
             done(new Error('Password does not match'))
           return done(null, false, { message: "Password does not match" });
         } else {
-            const limitedUser = await User.findOneAndUpdate( {email: username}, {online: true}, { 'fields': {password: 0 }})
-        return done(null, limitedUser);
+            const limitedUser = await User.findOneAndUpdate( {email: username}, {online: true}, { 'fields': {password: 0 }}).populate({ path: 'friendsList', populate: { path: 'recipient requester', select: '-password'} })
+            console.log(limitedUser)
+            return done(null, limitedUser);
     }
 }
       } catch(err) {
@@ -62,6 +64,7 @@ router.post('/login', function(req, res, next) {
       req.login(user, function(err) {
         if (err) { return next(err); }
         console.log('is authenticated?: ' + req.isAuthenticated());
+        console.log(user)
         req.user = user;
         return res.status(200).json({ success: true, data: user, id: user})
       })
