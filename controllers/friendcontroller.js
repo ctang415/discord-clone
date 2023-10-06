@@ -16,6 +16,11 @@ exports.friend_add_post = [
             throw new Error('Username does not exist.')
         }
     }),
+    /*
+    body('', 'Friend request already sent').custom( async value => {
+        const existingRequest = await User.findOne({ friendsList: { }})
+    }),
+    */
     body('friendUsername', 'Username must be between 2-20 characters.').trim().isLength({min: 2}).isLength({max: 20}).escape(),
     asyncHandler (async (req, res, next) => {
         const errors = validationResult(req);
@@ -62,11 +67,14 @@ exports.friend_delete_request_post = async (req, res, next) => {
 }
 
 exports.friend_accept_request_post = async ( req, res, next) => {
-    const friend = await Friend.findOne({_id:req.body.id})
-    if (friend === null) {
-        res.status(400).json({error: "friend not found"})
+    const [friend, users ] = await Promise.all ([ 
+        Friend.findOne({_id: req.body.id}),
+        User.find({ 'friendsList': {_id: req.body.id} })
+    ])
+    if (friend === null || users.length !== 2) {
+        res.status(400).json({error: "Error"})
         return
     }
-    const friendRequest = await Friend.findOneAndUpdate( {_id: req.body.id}, {status: 'Friends'})
-    res.status(200).json({success: true, friend:friendRequest})
+    await Friend.findOneAndUpdate({_id: req.body.id}, {status: 'Friends'})
+    res.status(200).json({success: true})
 }

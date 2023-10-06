@@ -30,6 +30,7 @@ const AddFriend = ({friend, pending}) => {
     const [ error, setError ] = useState([])
     const [ id, setId] = useState('')
     const [ friendUsername, setFriendUsername] = useState('')
+    const [ accept, setAccept] = useState(false)
     const [ user, setUser] = useState('')
 
     const addFriend = async (e) => {
@@ -56,9 +57,11 @@ const AddFriend = ({friend, pending}) => {
 
     const cancelRequest = async () => {
         const request = { id: id, user: user, friend: friendUsername}    
+        console.log(request)
         try {
             const response = await fetch ('http://localhost:3000/users/delete-request', {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(request)
+                method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include',
+                body: JSON.stringify(request)
             })
             if (!response.ok) {
                 throw await response.json()
@@ -68,6 +71,9 @@ const AddFriend = ({friend, pending}) => {
                 alert('Friend request removed!')
                 fetchUser()
                 setId('')
+                setUser('')
+                setFriendUsername('')
+                setAccept(false)
             }
         } catch (err) {
             console.log(err)
@@ -78,7 +84,8 @@ const AddFriend = ({friend, pending}) => {
         const request = { id: id, user: user, friend: friendUsername}
         try {
             const response = await fetch ('http://localhost:3000/users/accept-request', {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(request)
+                method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include',
+                body: JSON.stringify(request)
             })
             if (!response.ok) {
                 throw await response.json()
@@ -88,6 +95,9 @@ const AddFriend = ({friend, pending}) => {
                 alert('Friend added!')
                 fetchUser()
                 setId('')
+                setUser('')
+                setFriendUsername('')
+                setAccept(false)
             }
         } catch (err) {
             console.log(err)
@@ -97,7 +107,18 @@ const AddFriend = ({friend, pending}) => {
     useEffect(() => {
         console.log(friends)
         console.log(userData[0])
+        console.log(friends.filter(x => x.status === 'Friends').length)
     }, [])
+
+    useEffect(() => {
+        if (user !== '' && friendUsername !== '' && id !== ''){
+            if (accept) {
+                acceptRequest()
+            } else {
+                cancelRequest()
+            }
+        }
+    }, [friendUsername])
 
     if (pending) {
         return (
@@ -112,12 +133,16 @@ const AddFriend = ({friend, pending}) => {
                     <p>{user.recipient.display_name}</p>
                     </StyledUi>
                     <StyledUi style={{ gap: '1em'}}>
-                    <button onClick={ user.requester.username === userData[0].username ?
-                        ()=>{ setId(`${user._id}`); setUser(`${user.requester._id}`); setFriendUsername(`${user.recipient._id}`); cancelRequest() } :
-                        () => {setId(`${user._id}`); setUser(`${user.requester._id}`); setFriendUsername(`${user.recipient._id}`); acceptRequest() }}>
+                    <button onClick={ 
+                        user.requester.username === userData[0].username ?
+                        () => {setId(`${user._id}`, () => id); setUser(`${user.requester._id}`); setFriendUsername(`${user.recipient._id}`);  } :
+                        () => { setAccept(true); setId(`${user._id}`); setUser(`${user.requester._id}`); setFriendUsername(`${user.recipient._id}`);}
+                        }>
                         {user.requester.username === userData[0].username ? "Cancel request" : "Add friend" }
                     </button>
-                    <button onClick={() =>{setId(`${user._id}`); setUser(`${user.requester._id}`); setFriendUsername(`${user.recipient._id}`); cancelRequest()}}
+                    <button onClick={
+                        () =>{ setId(`${user._id}`); setUser(`${user.requester._id}`); setFriendUsername(`${user.recipient._id}`); }
+                    }
                     style={ user.requester.username !== userData[0].username ? { display: 'flex'} : { display: 'none'}}>
                     Deny
                     </button>
@@ -152,16 +177,16 @@ const AddFriend = ({friend, pending}) => {
             <div style={{ display: 'flex', justifyContent: 'center'}}>
                 <StyledInput style={{padding: '0.5em', color: 'white'}} placeholder="Search" type="text"></StyledInput>
             </div>
-            <h4>ONLINE - {friends.filter(x => x.status === 'Friends')}</h4>
+            <h4>ONLINE - {friends.filter(x => x.status === 'Friends').length}</h4>
             <StyledUl>
                 {friends.filter(x => x.status === 'Friends').map(friend => {
                     return (
                         <StyledLink style={{display:'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}} 
-                        key={friend.name} to={`/chats/${friend.id}`}>
+                        key={friend.recipient.display_name === userData[0].display_name ? friend.requester.display_name : friend.recipient.display_name} to={`/chats/${friend.requester.id}`}>
                             <StyledListFriend>
                                 <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '1em'}}>
-                                    <Discord/>
-                                    {friend.name}
+                                    <Discord src={ friend.recipient.display_name === userData[0].display_name ? friend.requester.avatar_url : friend.recipient.avatar_url}/>
+                                    { friend.recipient.display_name === userData[0].display_name ? friend.requester.display_name : friend.recipient.display_name}
                                 </div>
                                 <div style={{display: 'flex', flexDirection: 'row', gap: '1em'}}>
                                 <div style={{backgroundColor: '#1e2124', borderRadius: '1em', padding: '0.5em'}}>
@@ -176,6 +201,7 @@ const AddFriend = ({friend, pending}) => {
                     )
                 })}
             </StyledUl>
+            
             </div>
         )
     }
