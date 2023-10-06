@@ -43,3 +43,30 @@ exports.friend_add_post = [
         }
     })
 ]
+
+exports.friend_delete_request_post = async (req, res, next) => {
+    const [friend, users ] = await Promise.all ([ 
+        Friend.findOne({_id: req.body.id}),
+        User.find({ 'friendsList': {_id: req.body.id} })
+    ])
+    if (friend === null || users.length !== 2) {
+        res.status(400).json({error: 'Error'})
+        return
+    }
+    await Promise.all( [ 
+        User.findByIdAndUpdate(req.body.user, {$pull: { friendsList: req.body.id}}, {new: true}),
+        User.findByIdAndUpdate(req.body.friend, {$pull: { friendsList: req.body.id}}, {new: true}),
+        Friend.findOneAndDelete({_id: req.body.id})
+    ])
+    res.status(200).json({success: true})
+}
+
+exports.friend_accept_request_post = async ( req, res, next) => {
+    const friend = await Friend.findOne({_id:req.body.id})
+    if (friend === null) {
+        res.status(400).json({error: "friend not found"})
+        return
+    }
+    const friendRequest = await Friend.findOneAndUpdate( {_id: req.body.id}, {status: 'Friends'})
+    res.status(200).json({success: true, friend:friendRequest})
+}

@@ -9,6 +9,7 @@ import Discord from "./styled/avatar"
 import StyledButton from "./styled/styledbutton"
 import ChatIcon from '../assets/chat.svg'
 import SettingsIcon from '../assets/settings.svg'
+import StyledUi from "./styled/styledui"
 
 export const StyledListFriend = styled(StyledList)`
     display: flex;
@@ -27,6 +28,9 @@ const AddFriend = ({friend, pending}) => {
     const { friends, userData, fetchUser } = useContext(LoginContext);
     const [ username, setUsername] = useState('')
     const [ error, setError ] = useState([])
+    const [ id, setId] = useState('')
+    const [ friendUsername, setFriendUsername] = useState('')
+    const [ user, setUser] = useState('')
 
     const addFriend = async (e) => {
         e.preventDefault()
@@ -50,6 +54,46 @@ const AddFriend = ({friend, pending}) => {
         }
     }
 
+    const cancelRequest = async () => {
+        const request = { id: id, user: user, friend: friendUsername}    
+        try {
+            const response = await fetch ('http://localhost:3000/users/delete-request', {
+                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(request)
+            })
+            if (!response.ok) {
+                throw await response.json()
+            }
+            await response.json()
+            if (response.status === 200) {
+                alert('Friend request removed!')
+                fetchUser()
+                setId('')
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const acceptRequest = async () => {
+        const request = { id: id, user: user, friend: friendUsername}
+        try {
+            const response = await fetch ('http://localhost:3000/users/accept-request', {
+                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(request)
+            })
+            if (!response.ok) {
+                throw await response.json()
+            }
+            await response.json()
+            if (response.status === 200) {
+                alert('Friend added!')
+                fetchUser()
+                setId('')
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     useEffect(() => {
         console.log(friends)
         console.log(userData[0])
@@ -59,13 +103,29 @@ const AddFriend = ({friend, pending}) => {
         return (
             <div style={{ padding: '4vh'}}>
             <h4 style={{color: 'white'}}>Pending</h4>
+            <StyledUl>
             {friends.filter(x => x.status === 'Pending').map(user => {
                 return (
-                    <button>
-                        {user.requester.username === userData[0].username ? "PENDING REQUEST" : "Add" }
+                <StyledUi style={{ alignItems: 'center', justifyContent: 'space-between'}} key={user.requester.username}>
+                    <StyledUi style={{ gap: '1em'}}>
+                    <Discord src={user.recipient.avatar_url}/>
+                    <p>{user.recipient.display_name}</p>
+                    </StyledUi>
+                    <StyledUi style={{ gap: '1em'}}>
+                    <button onClick={ user.requester.username === userData[0].username ?
+                        ()=>{ setId(`${user._id}`); setUser(`${user.requester._id}`); setFriendUsername(`${user.recipient._id}`); cancelRequest() } :
+                        () => {setId(`${user._id}`); setUser(`${user.requester._id}`); setFriendUsername(`${user.recipient._id}`); acceptRequest() }}>
+                        {user.requester.username === userData[0].username ? "Cancel request" : "Add friend" }
                     </button>
+                    <button onClick={() =>{setId(`${user._id}`); setUser(`${user.requester._id}`); setFriendUsername(`${user.recipient._id}`); cancelRequest()}}
+                    style={ user.requester.username !== userData[0].username ? { display: 'flex'} : { display: 'none'}}>
+                    Deny
+                    </button>
+                    </StyledUi>
+                </StyledUi>
                 )
             })}
+            </StyledUl>
             </div>
         )
         } else if (friend) {
