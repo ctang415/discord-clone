@@ -19,4 +19,6 @@ router.post('/delete-request', friend_controller.friend_delete_request_post)
 
 router.post('/accept-request', friend_controller.friend_accept_request_post)
 
+router.post('/remove-friend', friend_controller.friend_remove_friend_post)
+
 module.exports = router

@@ -6,17 +6,25 @@ import AddFriend from "./addfriend"
 const Friends = () => {
     const [ friend, setFriend ] = useState(false)
     const [ pending, setPending] = useState(false)
+    const [ all, setAll ] = useState(false)
     const changeFilter = () => {
         setFriend(false)
         setPending(false)
+        setAll(false)
     }
-    
+
     const changeFriend = () => {
         setFriend(true)
         setPending(false)
+        setAll(false)
     }
 
-    const friendFilter = [ {name: 'Online', function: () => changeFilter()}, {name: 'All', function: () => setFriend(false)}, 
+    const changeAll = () => {
+        setAll(true)
+        setPending(false)
+        setFriend(false)
+    }
+    const friendFilter = [ {name: 'Online', function: () => changeFilter()}, {name: 'All', function: () => changeAll()}, 
     {name: 'Pending', function: () => setPending(true)}, {name: 'Blocked'}]
     
     return (
@@ -37,7 +45,7 @@ const Friends = () => {
                 style={{ backgroundColor: 'green', color: 'white', border: 'none'}}>Add Friend</button>
             </ul>
         </StyledNav>
-        <AddFriend friend={friend} pending={pending} />
+        <AddFriend all={all} friend={friend} pending={pending} />
         </div>
         </>
     )

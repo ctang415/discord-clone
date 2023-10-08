@@ -8,7 +8,7 @@ exports.friend_add_post = [
     body('friendUsername', 'You cannot add yourself.').custom(async (value, {req}) => {
             if (value === req.body.username) {
                 throw new Error('You cannot add yourself.')
-        }
+            }
     }),
     body('friendUsername', "Username does not exist").custom( async value => {
         const existingUser = await User.findOne( {username: value})
@@ -16,11 +16,18 @@ exports.friend_add_post = [
             throw new Error('Username does not exist.')
         }
     }),
-    /*
-    body('', 'Friend request already sent').custom( async value => {
-        const existingRequest = await User.findOne({ friendsList: { }})
+    body('friendUsername', 'You are already friends or a friend request has already been sent.').custom(async (value, {req}) => {
+        const [user, friendUser] = await Promise.all (
+            [
+                User.findOne({username: value}),
+                User.findOne({username:req.body.username})
+            ]
+        )
+        const existingRequest = await Friend.findOne({recipient: user.id , requester: friendUser.id})
+        if (existingRequest !== null) {
+            throw new Error('You are already friends or a friend request has been sent')
+        }  
     }),
-    */
     body('friendUsername', 'Username must be between 2-20 characters.').trim().isLength({min: 2}).isLength({max: 20}).escape(),
     asyncHandler (async (req, res, next) => {
         const errors = validationResult(req);
@@ -77,4 +84,21 @@ exports.friend_accept_request_post = async ( req, res, next) => {
     }
     await Friend.findOneAndUpdate({_id: req.body.id}, {status: 'Friends'})
     res.status(200).json({success: true})
+}
+
+exports.friend_remove_friend_post = async ( req, res, next ) => {
+    const [friends, friendRequest ] = await Promise.all ([
+        User.find({ 'friendsList': {_id: req.body.id}}),
+        Friend.findById(req.body.id)
+    ])
+        if (friends.length !== 2 || friendRequest === null) {
+        res.status(400).json({error: "Error"})
+        return
+    }
+    await Promise.all( [
+        User.findByIdAndUpdate(req.body.myUsername, {$pull: {friendsList: req.body.id}}, {new: true}),
+        User.findByIdAndUpdate(req.body.myFriend, {$pull: {friendsList: req.body.id}}, {new: true}),
+        Friend.findOneAndDelete({_id:req.body.id})
+    ])
+    res.status(200).json({success:true})
 }
