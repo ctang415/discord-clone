@@ -1,4 +1,4 @@
-import { useContext } from "react"
+import { useEffect, useContext } from "react"
 import styled from "styled-components"
 import LoggedUser from "./loggeduser"
 import { LoginContext } from "./logincontext"
@@ -23,7 +23,12 @@ const StyledH4 = styled.h4`
 
 const SideBar = () => {
     const { friends, userData } = useContext(LoginContext)
-    
+
+    useEffect(() => {
+        console.log(userData[0])
+        console.log(friends)
+    }, [])
+
     return (
         <div style={{ display: "flex", flexDirection: 'column', backgroundColor: '#36393e', 
         minWidth: "15vw", maxWidth: "15vw", minHeight: '100vh', maxHeight: '100vh'}}>
@@ -41,11 +46,11 @@ const SideBar = () => {
             <StyledUl>
                 {userData[0].chatsList.map(user => {
                     return (
-                        <div key={user.name} style={{ display: 'flex', flexDirection:'row'}}>                        
-                        <StyledLink  to={`/chats/${user.id}`}>
+                        <div key={user.display_name} style={{ display: 'flex', flexDirection:'row'}}>                        
+                        <StyledLink to={`/chats/${user.id}`}>
                             <StyledList style={{ display: 'flex', gap: '1em', alignItems: 'center'}}>
-                                <Discord/>
-                                {user.name}
+                                <Discord src={user.avatar_url}/>
+                                {user.display_name}
                             </StyledList>
                         </StyledLink>
                         </div>

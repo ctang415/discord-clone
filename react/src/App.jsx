@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import './App.css'
-import { Outlet } from 'react-router'
+import { Outlet, useNavigate } from 'react-router'
 import { LoginContext } from './components/logincontext'
 
 function App() {
@@ -9,6 +9,7 @@ function App() {
   const [ friends, setFriends ] = useState([])
   const [ userData, setUserData ] = useState([])
   const [ profileEdit, setProfileEdit] = useState(false)
+  const navigate = useNavigate()
 
   const logOut = async (email) => {
     const username = {  username: email }
@@ -21,6 +22,7 @@ function App() {
           setLogin(false)  
           setUserSettings(false)
           alert('Successfully logged out!')
+          navigate('/')
         }
       } catch (err) {
         console.log(err)

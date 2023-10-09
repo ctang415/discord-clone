@@ -41,7 +41,6 @@ const AddFriend = ({friend, pending, all}) => {
         e.preventDefault()
         setError([])
         const friend = { username: userData[0].username, friendUsername: username }
-        console.log(friend)
         try {
             const response = await fetch ('http://localhost:3000/add-friend', {
                 method: 'POST', headers: {'Content-type': 'application/json'}, credentials: 'include',
@@ -63,7 +62,6 @@ const AddFriend = ({friend, pending, all}) => {
 
     const cancelRequest = async () => {
         const request = { id: id, user: user, friend: friendUsername}    
-        console.log(request)
         try {
             const response = await fetch ('http://localhost:3000/users/delete-request', {
                 method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include',
@@ -113,6 +111,8 @@ const AddFriend = ({friend, pending, all}) => {
     useEffect(() => {
         console.log(friends)
         console.log(userData[0])
+        console.log(friends.filter(x => x.status === 'Friends').map( x => x.requester.display_name === userData[0].display_name ? x.recipient : x.requester) )
+        console.log(friends.filter(x => x.status === 'Friends').filter(x => x.requester.display_name !== userData[0].display_name))
     }, [])
 
     useEffect(() => {
@@ -218,9 +218,9 @@ const AddFriend = ({friend, pending, all}) => {
             <div style={{ display: 'flex', justifyContent: 'center'}}>
                 <StyledInput style={{padding: '0.5em', color: 'white'}} placeholder="Search" type="text"></StyledInput>
             </div>
-            <h4>ONLINE - {friends.filter(x => x.recipient.display_name === userData[0].display_name ? x.requester.online === true : x.recipient.online === true).length}</h4>
+            <h4>ONLINE - {friends.filter(x => x.status === 'Friends').map(x => x.recipient.display_name === userData[0].display_name ? x.requester : x.recipient).length}</h4>
             <StyledUl style={{ width: '95%'}}>
-            {friends.filter(x => x.recipient.display_name === userData[0].display_name ? x.requester.online === true : x.recipient.online === true).map(friend => {
+            {friends.filter(x => x.status === 'Friends').map(friend => {
                 return (
                     <StyledListFriend  key={friend.recipient.display_name === userData[0].display_name ? friend.requester.display_name : friend.recipient.display_name}>
                         <StyledLink style={{display:'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',}} 

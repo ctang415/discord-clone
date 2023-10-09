@@ -9,6 +9,7 @@ const session = require('express-session')
 const bodyParser = require('body-parser')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
+const chatsRouter = require('./routes/chats')
 const User = require ('./models/user')
 
 mongoose.connect(`${process.env.mongodb}`, { useUnifiedTopology: true, useNewUrlParser: true });
@@ -33,7 +34,7 @@ app.use(passport.session())
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
-
+app.use('/chats', chatsRouter)
   
 app.listen('3000', () => {
     console.log('Now listening on port 3000')
