@@ -27,6 +27,7 @@ const SideBar = () => {
     useEffect(() => {
         console.log(userData[0])
         console.log(friends)
+        console.log(userData[0].chatsList.map(user => user.users.filter(x => x._id !== userData[0].id)))
     }, [])
 
     return (
@@ -46,11 +47,11 @@ const SideBar = () => {
             <StyledUl>
                 {userData[0].chatsList.map(user => {
                     return (
-                        <div key={user.display_name} style={{ display: 'flex', flexDirection:'row'}}>                        
-                        <StyledLink to={`/chats/${user.id}`}>
+                        <div key={user.users.filter(x => x._id !== userData[0].id)[0].display_name} style={{ display: 'flex', flexDirection:'row'}}>                        
+                        <StyledLink to={`/chats/${user.users.filter(x => x._id !== userData[0].id)[0].id}`}>
                             <StyledList style={{ display: 'flex', gap: '1em', alignItems: 'center'}}>
-                                <Discord src={user.avatar_url}/>
-                                {user.display_name}
+                                <Discord src={user.users.filter(x => x._id !== userData[0].id)[0].avatar_url}/>
+                                {user.users.filter(x => x._id !== userData[0].id)[0].display_name}
                             </StyledList>
                         </StyledLink>
                         </div>

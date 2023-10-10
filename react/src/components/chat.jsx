@@ -99,16 +99,14 @@ const Chat = () => {
             <UserSettings/>
             <StyledChatDiv>
                 <StyledUl>
-                    <StyledNav style={{ display: 'flex', alignItems: 'center', gap: '1em'}}>         
-                        {user.map(data => {
-                            return (
-                                <div key={data.id}>
-                                    <Discord src={data.avatar_url}/>      
-                                    <div style={{ fontWeight: 'bold', fontSize: '1.25em', display: 'flex', flexDirection: 'row'}} key={data.display_name}>{data.display_name}</div>  
-                                </div>
-                                )
-                        })}
-                    </StyledNav>
+                    {user.map(data => {
+                        return (
+                            <StyledNav key={data.display_name} style={{ display: 'flex', alignItems: 'center', gap: '1em'}}>         
+                                <Discord src={data.avatar_url}/>      
+                                <div style={{ fontWeight: 'bold', fontSize: '1.25em', display: 'flex', flexDirection: 'row'}} key={data.display_name}>{data.display_name}</div>  
+                            </StyledNav>
+                           )
+                     })}
                     <div style={{ padding: '4vh', display: "flex", flexDirection: 'column', lineHeight: '0.1em', minHeight: '75vh', 
                     maxHeight: '75vh', overflow: 'scroll'}}>
                     {messages.map((message => {
@@ -119,14 +117,13 @@ const Chat = () => {
                         )
                     }))}
                     </div>
-                    <form onSubmit={sendMessage}>
+                    <form style={{ display: 'flex'}} onSubmit={sendMessage}>
                     <StyledInputChat type="text" placeholder={`Message @ ${name}`} onChange={(e)=> setMessage(e.target.value)} value={message} required/>
                     <button type="submit">SEND</button>
                     </form>
                 </StyledUl>
             </StyledChatDiv>
-        </StyledUi>
-      
+        </StyledUi>      
         </>
     )
 }

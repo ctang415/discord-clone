@@ -23,7 +23,7 @@ passport.use(
             done(new Error('Password does not match'))
           return done(null, false, { message: "Password does not match" });
         } else {
-            const limitedUser = await User.findOneAndUpdate( {email: username}, {online: true}, { 'fields': {password: 0 }}).populate({ path: 'friendsList', populate: { path: 'recipient requester', select: '-password'} })
+            const limitedUser = await User.findOneAndUpdate( {email: username}, {online: true}, { 'fields': {password: 0 }}).populate([{ path: 'friendsList', populate: { path: 'recipient requester', select: '-password'} }, {path: 'chatsList', populate: {path: 'users', select: '-password'}} ])
             console.log(limitedUser)
             return done(null, limitedUser);
     }
