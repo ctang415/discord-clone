@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import styled from "styled-components"
 import { LoginContext } from "./logincontext"
+import Message from "./message"
 import SideBar from "./sidebar"
 import Discord from "./styled/avatar"
 import StyledChatDiv from "./styled/styledchatdiv"
@@ -25,6 +26,7 @@ const Chat = () => {
     const [ message, setMessage ] = useState('')
     const [ messages, setMessages] = useState([])
     const { userData, friends, fetchUser } = useContext(LoginContext)
+    const [ poster, setPoster ] = useState([])
     const params = useParams()
     let ignore = false;
 
@@ -57,10 +59,11 @@ const Chat = () => {
 
     const sendMessage = async (e) => {
         e.preventDefault()
-        const myMessage = { message: message}
+        const myMessage = { friend: `${params.chatid}`, sender: userData[0].id, message: message}
         try {
             const response = await fetch ('http://localhost:3000/chats/send-message', {
-                method: 'POST', headers: {'Content-Type': 'application/json', body: JSON.stringify(myMessage)}
+                method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include', 
+                body: JSON.stringify(myMessage)
             })
             if (!response.ok) {
                 throw await response.json()
@@ -69,6 +72,8 @@ const Chat = () => {
             if (response.status === 200) {
                 console.log('successful message')
                 fetchUser()
+                fetchMessages()
+                setMessage('')
             }
         } catch (err) {
             console.log(err)
@@ -77,13 +82,15 @@ const Chat = () => {
 
     useEffect(() => {
         const filter = friends.map(x => x.requester._display_name === userData[0]._display_name ? x.recipient : x.requester ) 
-        console.log(filter)
-        setMessages(filter.map(friend => friend.message))
-        console.log(messages)
+        setMessages(userData[0].chatsList.map(x => x.messages)) 
         setUser(filter)
         setName(filter[0].display_name)
-        console.log(user)  
-    }, [params])
+        setPoster(userData[0].chatsList.map(x=> x.messages)[0].map(y => (y.sender.display_name)))        
+    console.log(poster)
+    }, [])
+
+    useEffect(() => {
+}, [])
 
     useEffect(() => {
         if (!ignore) {
@@ -109,16 +116,20 @@ const Chat = () => {
                      })}
                     <div style={{ padding: '4vh', display: "flex", flexDirection: 'column', lineHeight: '0.1em', minHeight: '75vh', 
                     maxHeight: '75vh', overflow: 'scroll'}}>
-                    {messages.map((message => {
+                    {messages.map(( message => {
                         return (
-                            <StyledList key={message}>
-                                {message}
-                            </StyledList>
+                            message.map( (x, index) => {
+                                return (
+                                    <div key={index}>
+                                        <Message index={index} poster={poster} setPoster={setPoster} x={x}/>
+                                    </div>
+                                )
+                            })
                         )
                     }))}
                     </div>
                     <form style={{ display: 'flex'}} onSubmit={sendMessage}>
-                    <StyledInputChat type="text" placeholder={`Message @ ${name}`} onChange={(e)=> setMessage(e.target.value)} value={message} required/>
+                    <StyledInputChat type="text" name="message" placeholder={`Message @ ${name}`} onChange={(e)=> setMessage(e.target.value)} value={message} required/>
                     <button type="submit">SEND</button>
                     </form>
                 </StyledUl>

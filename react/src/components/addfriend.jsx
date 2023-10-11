@@ -109,13 +109,6 @@ const AddFriend = ({friend, pending, all}) => {
     }
 
     useEffect(() => {
-        console.log(friends)
-        console.log(userData[0])
-        console.log(friends.filter(x => x.status === 'Friends').map( x => x.requester.display_name === userData[0].display_name ? x.recipient : x.requester) )
-        console.log(friends.filter(x => x.status === 'Friends').filter(x => x.requester.display_name !== userData[0].display_name))
-    }, [])
-
-    useEffect(() => {
         if (user !== '' && friendUsername !== '' && id !== ''){
             if (accept) {
                 acceptRequest()

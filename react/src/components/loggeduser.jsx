@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react"
+import { useState, useContext, useEffect } from "react"
 import { LoginContext } from "./logincontext"
 import Discord from "./styled/avatar"
 import Mic from '../assets/microphone.svg'
@@ -16,14 +16,19 @@ const StyledImg = styled.img`
 
 const LoggedUser = () => {
     const { userData, setUserSettings } = useContext(LoginContext)
-   
+    const [ user, setUser] = useState([])
+    
+    useEffect(() => {
+        setUser(userData[0])
+    }, [])
+
     return (
         <>
             <div style={{ backgroundColor: '#1e2124', position: 'fixed', bottom: '0', minWidth: '15vw', maxWidth: '15vw'}}>
                 <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5em', justifyContent: 'space-evenly'}}>
-                    <Discord src={userData[0].avatar_url}/>
-                    <h5>{userData[0].display_name}</h5>
-                    <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5em', alignItems: 'center'}}>
+                    <Discord src={user.avatar_url}/>
+                    <h5>{user.display_name}</h5>
+                    <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5em', alignItems: 'center'}}>  
                         <StyledImg style={{ cursor: 'pointer'}} src={Mic} alt="Microphone icon"/>
                         <StyledImg style={{ cursor: 'pointer'}} src={Headset} alt="Headset icon"/>
                         <StyledImg style={{ cursor: 'pointer'}} src={UserSettings} alt="Settings icon" onClick={()=> setUserSettings(true)}/>

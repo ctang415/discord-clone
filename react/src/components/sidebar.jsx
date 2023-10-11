@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react"
+import { useState, useEffect, useContext } from "react"
 import styled from "styled-components"
 import LoggedUser from "./loggeduser"
 import { LoginContext } from "./logincontext"
@@ -23,11 +23,9 @@ const StyledH4 = styled.h4`
 
 const SideBar = () => {
     const { friends, userData } = useContext(LoginContext)
-
+    const [ messages, setMessages ] = useState([])
     useEffect(() => {
-        console.log(userData[0])
-        console.log(friends)
-        console.log(userData[0].chatsList.map(user => user.users.filter(x => x._id !== userData[0].id)))
+        setMessages(userData[0].chatsList.map(user => user.users))
     }, [])
 
     return (
@@ -45,13 +43,13 @@ const SideBar = () => {
             <h5>+</h5>
             </div>
             <StyledUl>
-                {userData[0].chatsList.map(user => {
+                {messages.map(user => {
                     return (
-                        <div key={user.users.filter(x => x._id !== userData[0].id)[0].display_name} style={{ display: 'flex', flexDirection:'row'}}>                        
-                        <StyledLink to={`/chats/${user.users.filter(x => x._id !== userData[0].id)[0].id}`}>
+                        <div key={user.filter(x => x._id !== userData[0].id)[0].display_name} style={{ display: 'flex', flexDirection:'row'}}>                        
+                        <StyledLink to={`/chats/${user.filter(x => x._id !== userData[0].id)[0].id}`}>
                             <StyledList style={{ display: 'flex', gap: '1em', alignItems: 'center'}}>
-                                <Discord src={user.users.filter(x => x._id !== userData[0].id)[0].avatar_url}/>
-                                {user.users.filter(x => x._id !== userData[0].id)[0].display_name}
+                                <Discord src={user.filter(x => x._id !== userData[0].id)[0].avatar_url}/>
+                                {user.filter(x => x._id !== userData[0].id)[0].display_name}
                             </StyledList>
                         </StyledLink>
                         </div>

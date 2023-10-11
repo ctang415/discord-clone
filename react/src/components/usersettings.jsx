@@ -42,14 +42,19 @@ const UserSettings = () => {
     const [ passwordModal, setPasswordModal ] = useState(false)
     const [emailModal, setEmailModal] = useState(false)
     const [ changes, setChanges ] = useState(false)
-    const [ displayName, setDisplayName] = useState(userData[0].display_name)
-    const [ about, setAbout ] = useState(userData[0].about_me)
+    const [ displayName, setDisplayName] = useState('')
+    const [ about, setAbout ] = useState('')
 
     const clearChanges = () => {
         setDisplayName(userData[0].display_name)
         setAbout(userData[0].about_me)
         setChanges(false)
     }
+
+    useEffect(() => {
+        setDisplayName(userData[0].display_name)
+        setAbout(userData[0].about_me)
+    }, [])
 
     if (userSettings) {
         return (

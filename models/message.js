@@ -6,7 +6,7 @@ const MessageSchema = new Schema (
     {
         sender: { type: Schema.Types.ObjectId, ref: 'User'},
         timestamp: { type: Date, default: Date.now()},
-        message: { type: String, minLength: 2, required: true}
+        message: { type: String, minLength: 1, required: true}
     },
     {
         toObject: { virtuals: true },
@@ -19,7 +19,7 @@ MessageSchema.virtual('timestamp_formatted').get( function () {
 })
 
 MessageSchema.virtual('creation_time').get( function () {
-    return DateTime.fromJSDate(this.creation).toFormat('hh:mm a')
+    return DateTime.fromJSDate(this.timestamp).toFormat('hh:mm a')
 })
 
 module.exports = mongoose.model('Message', MessageSchema)
