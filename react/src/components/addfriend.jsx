@@ -118,6 +118,10 @@ const AddFriend = ({friend, pending, all}) => {
         }
     }, [friendUsername])
 
+    useEffect(() => {
+console.log(friends.filter(x => x.status === 'Friends').map(x => x.recipient.display_name === userData[0].display_name ? x.requester.online === true.length : x.recipient.online === true.length) )
+    }, [])
+
     if (pending) {
         return (
             <div style={{ padding: '4vh'}}>
@@ -211,7 +215,7 @@ const AddFriend = ({friend, pending, all}) => {
             <div style={{ display: 'flex', justifyContent: 'center'}}>
                 <StyledInput style={{padding: '0.5em', color: 'white'}} placeholder="Search" type="text"></StyledInput>
             </div>
-            <h4>ONLINE - {friends.filter(x => x.status === 'Friends').map(x => x.recipient.display_name === userData[0].display_name ? x.requester : x.recipient).length}</h4>
+            <h4>ONLINE - {friends.filter(x => x.status === 'Friends').map(x => x.recipient.display_name === userData[0].display_name ? x.requester.online === true : x.recipient.online === true).length}</h4>
             <StyledUl style={{ width: '95%'}}>
             {friends.filter(x => x.status === 'Friends').map(friend => {
                 return (

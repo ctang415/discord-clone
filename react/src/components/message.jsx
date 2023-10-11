@@ -1,8 +1,8 @@
-import { useEffect } from "react"
 import Discord from "./styled/avatar"
 import StyledList from "./styled/styledlist"
+import { decode } from 'html-entities'
 
-const Message = ({x, setPoster, poster, index}) => {
+const Message = ({x, poster, index}) => {
     
     return (
         <StyledList style={{display: 'flex', flexDirection: 'row', gap: '1.5em', padding: '0em', alignItems:'center'}} key={x.message}>
@@ -14,7 +14,7 @@ const Message = ({x, setPoster, poster, index}) => {
                     <p style={ poster[index - 1] === poster[index] && index !== 0 ? {display: 'none' } : {display: 'flex', color: 'white', fontWeight: 'bold'} }>{x.sender.display_name}</p> 
                     <p style={ poster[index - 1] === poster[index] && index !== 0 ? {display: 'none'} : {display: 'flex'}}>{x.timestamp_formatted} {x.creation_time}</p>
                 </div>
-                {x.message}
+                {decode(x.message)}
             </div>
         </StyledList>
     )

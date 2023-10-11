@@ -33,12 +33,12 @@ const Friends = () => {
         <StyledNav style={{ display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
             <h4 style={{margin: '0', display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '0.2em'}}>
                 <img src={Friend} alt="Friend icon"/>
-                Friends</h4>
+                Friends
+            </h4>
             <ul style={{display: 'flex', gap: '1.5em', listStyle: 'none'}}>
                 {friendFilter.map(friend => {
                     return (
-                        <li style={{ cursor: 'pointer' }} key={friend.name} onClick={friend.function}
-                        >{friend.name}</li>
+                        <li style={{ cursor: 'pointer' }} key={friend.name} onClick={friend.function}>{friend.name}</li>
                     )
                 })}
                 <button onClick={() => changeFriend()} 

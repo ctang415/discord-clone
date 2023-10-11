@@ -8,7 +8,6 @@ import SideBar from "./sidebar"
 import Discord from "./styled/avatar"
 import StyledChatDiv from "./styled/styledchatdiv"
 import StyledInput from "./styled/styledinput"
-import StyledList from "./styled/styledlist"
 import StyledNav from "./styled/stylednav"
 import StyledUi from "./styled/styledui"
 import StyledUl from "./styled/styledul"
@@ -32,7 +31,6 @@ const Chat = () => {
 
     const fetchMessages = async () => {
         const chat = { user: userData[0].id, friend: `${params.chatid}` }
-        console.log(chat)
         try {
             const response = await fetch (`http://localhost:3000/chats/${params.chatid}`, {
                 method: 'GET', credentials: 'include', headers: {'Content-Type': 'application/json'}
@@ -40,10 +38,10 @@ const Chat = () => {
             if (!response.ok) {
                 throw await response.json()
             }
-                await response.json()
-                if (response.status === 200) {
-                    console.log('successful chat retrieval')
-                }
+            await response.json()
+            if (response.status === 200) {
+                console.log('successful chat retrieval')
+            }
         } catch (err) {
         console.log(err)
         const responseTwo = await fetch ('http://localhost:3000/chats/new-chat', {
@@ -81,23 +79,16 @@ const Chat = () => {
     }
 
     useEffect(() => {
-        const filter = friends.map(x => x.requester._display_name === userData[0]._display_name ? x.recipient : x.requester ) 
-        setMessages(userData[0].chatsList.map(x => x.messages)) 
-        setUser(filter)
-        setName(filter[0].display_name)
-        setPoster(userData[0].chatsList.map(x=> x.messages)[0].map(y => (y.sender.display_name)))        
-    console.log(poster)
-    }, [])
-
-    useEffect(() => {
-}, [])
-
-    useEffect(() => {
         if (!ignore) {
             fetchMessages()
+            const filter = friends.map(x => x.requester._display_name === userData[0]._display_name ? x.recipient : x.requester ) 
+            setMessages(userData[0].chatsList.map(x => x.messages)) 
+            setUser(filter)
+            setName(filter[0].display_name)
+            setPoster(userData[0].chatsList.map(x=> x.messages)[0].map(y => (y.sender.display_name)))
         }
         return () => { ignore = true }
-    }, [])
+    }, [fetchUser])
 
     return (
         <>
@@ -114,7 +105,7 @@ const Chat = () => {
                             </StyledNav>
                            )
                      })}
-                    <div style={{ padding: '4vh', display: "flex", flexDirection: 'column', lineHeight: '0.1em', minHeight: '75vh', 
+                    <div style={{ padding: '4vh', display: "flex", flexDirection: 'column', lineHeight: '0.4em', minHeight: '75vh', 
                     maxHeight: '75vh', overflow: 'scroll'}}>
                     {messages.map(( message => {
                         return (

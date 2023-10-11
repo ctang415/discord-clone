@@ -30,11 +30,11 @@ const SideBar = () => {
 
     return (
         <div style={{ display: "flex", flexDirection: 'column', backgroundColor: '#36393e', 
-        minWidth: "15vw", maxWidth: "15vw", minHeight: '100vh', maxHeight: '100vh'}}>
-            <StyledNav style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                <StyledInput style={{ display: 'flex', width: '90%', color: 'white', padding: '0.45em'}} placeholder="Find or start a conversation" type="text"></StyledInput>
+        minWidth: "15vw", maxWidth: "15vw", minHeight: '95vh', maxHeight: '95vh', overflow: 'scroll'}}>
+            <StyledNav style={{display: 'flex', maxWidth: '15vw', position: 'fixed'}}>
+                <StyledInput style={{ display: 'flex', color: 'white', padding: '0.45em'}} placeholder="Find or start a conversation" type="text"></StyledInput>
             </StyledNav>
-            <div style={{ padding: '4vh'}}>
+            <div style={{ padding: '4vh', marginTop: '5vh'}}>
             <StyledLink to="/">
                 <StyledH4><img src={Friend} alt="Friend Icon"></img>Friends</StyledH4>
             </StyledLink>
