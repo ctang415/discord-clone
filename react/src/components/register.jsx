@@ -17,7 +17,13 @@ const Register = () => {
         const formData = { email: email, username: username, password: password, avatar: Discord }
         try {
             setError([])
+           /*
             const response = await fetch ('http://localhost:3000/register', {
+                method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(formData)
+            })
+            */
+
+            const response = await fetch ('http://localhost:3000/users', {
                 method: 'POST', headers: {"Content-Type": "application/json"}, body: JSON.stringify(formData)
             })
             if (!response.ok) {

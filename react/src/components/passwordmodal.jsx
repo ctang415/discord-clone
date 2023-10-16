@@ -24,10 +24,17 @@ const PasswordModal = ( {setPasswordModal, passwordModal} ) => {
         const update = { id: userData[0]._id, password: password, newPassword: newPassword, confirmPassword: confirmPassword }
         setError([])
         try {
-            const response = await fetch ('http://localhost:3000/users/update-password', {
+            
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/update-password`, {
                 method: 'POST', credentials: 'include', headers: {'Content-Type': 'application/json', 
                 'Accept': 'application/json'}, body: JSON.stringify(update) 
             })
+            /*
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}`, {
+                method: 'POST', credentials: 'include', headers: {'Content-Type': 'application/json', 
+                'Accept': 'application/json'}, body: JSON.stringify(update) 
+            })
+            */
             if (!response.ok) {
                 throw await response.json()
             }

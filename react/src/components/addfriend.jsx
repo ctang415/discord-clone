@@ -42,7 +42,13 @@ const AddFriend = ({friend, pending, all}) => {
         setError([])
         const friend = { username: userData[0].username, friendUsername: username }
         try {
+            /*
             const response = await fetch ('http://localhost:3000/add-friend', {
+                method: 'POST', headers: {'Content-type': 'application/json'}, credentials: 'include',
+                body: JSON.stringify(friend)
+            })
+            */
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/friends`, {
                 method: 'POST', headers: {'Content-type': 'application/json'}, credentials: 'include',
                 body: JSON.stringify(friend)
             })

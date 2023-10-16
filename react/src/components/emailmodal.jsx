@@ -24,10 +24,18 @@ const EmailModal = ( {setEmailModal, emailModal} ) => {
         const update = { id: userData[0]._id, email: email, password: password, confirmPassword: confirmPassword}
         setError([])
         try {
-            const response = await fetch ('http://localhost:3000/users/update-email', {
+            
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/update-email`, {
                 method: 'POST', credentials: 'include', headers: {'Content-Type': 'application/json', 
                 'Accept': 'application/json'}, body: JSON.stringify(update) 
             })
+            
+/*
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}`, {
+                method: 'POST', credentials: 'include', headers: {'Content-Type': 'application/json', 
+                'Accept': 'application/json'}, body: JSON.stringify(update) 
+            })
+            */
             if (!response.ok) {
                 throw await response.json()
             }
@@ -67,7 +75,7 @@ const EmailModal = ( {setEmailModal, emailModal} ) => {
                     <label htmlFor="password" style={{ fontWeight: 'bold', fontSize: '1.75vh'}}>CURRENT PASSWORD</label>
                     <StyledInput type="password" name="password" style={{ color: 'white'}}
                     onChange={(e) => setPassword(e.target.value)} value={password} required></StyledInput>
-                    <label htmlFor="confirmPassword" style={{ fontWeight: 'bold', fontSize: '1.75vh'}}>CONFIRM NEW PASSWORD</label>
+                    <label htmlFor="confirmPassword" style={{ fontWeight: 'bold', fontSize: '1.75vh'}}>CONFIRM PASSWORD</label>
                     <StyledInput type="password" name="confirmPassword" value={confirmPassword} style={{ color: 'white'}}
                     onChange={(e) => setConfirmPassword(e.target.value)} required></StyledInput>
                     <div style={{display:'flex', justifyContent:'flex-end', gap: '1em'}}>

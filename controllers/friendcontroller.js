@@ -5,16 +5,16 @@ const { body, validationResult } = require('express-validator')
 const { isValidObjectId } = require('mongoose')
 
 exports.friend_add_post = [
-    body('friendUsername', 'You cannot add yourself.').custom(async (value, {req}) => {
-            if (value === req.body.username) {
-                throw new Error('You cannot add yourself.')
-            }
-    }),
     body('friendUsername', "Username does not exist").custom( async value => {
         const existingUser = await User.findOne( {username: value})
         if (existingUser === null) {
-            throw new Error('Username does not exist.')
+            throw new Error('Username does not exist')
         }
+    }),
+    body('friendUsername', 'You cannot add yourself.').custom(async (value, {req}) => {
+            if (value === req.body.username) {
+              throw new Error('You cannot add yourself.')
+            }
     }),
     body('friendUsername', 'You are already friends or a friend request has already been sent.').custom(async (value, {req}) => {
         const [user, friendUser] = await Promise.all (
@@ -23,12 +23,14 @@ exports.friend_add_post = [
                 User.findOne({username:req.body.username})
             ]
         )
-        const existingRequest = await Friend.findOne({recipient: user.id , requester: friendUser.id})
-        if (existingRequest !== null) {
-            throw new Error('You are already friends or a friend request has been sent')
-        }  
+        if (user && friendUser) {
+            const existingRequest = await Friend.findOne({recipient: user.id, requester: friendUser.id})
+            if (existingRequest !== null) {
+                throw new Error('You are already friends or a friend request has been sent')
+            }
+        }
     }),
-    body('friendUsername', 'Username must be between 2-20 characters.').trim().isLength({min: 2}).isLength({max: 20}).escape(),
+    body('friendUsername', 'Username must be between 2-20 characters.').trim().isLength({min: 2, max: 20}).escape(),
     asyncHandler (async (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()){

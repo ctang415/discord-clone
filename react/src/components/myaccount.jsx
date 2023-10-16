@@ -25,9 +25,11 @@ const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
         setDisplayName(userData[0].display_name)
         setAbout(userData[0].about_me)
         setChanges(false)
+        setError([])
     }
 
     const closeModal = () => {
+        setError([])
         setUserSettings(false)
         setProfileEdit(false)
         setPasswordModal(false)
@@ -38,7 +40,13 @@ const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
     const handleDelete = async () => {
         const deleteAccount = {id: userData[0]._id}
         try {
+            /*
             const response = await fetch ('http://localhost:3000/users/delete', {
+                method: 'POST', credentials: 'include',
+                headers: {'Content-type': 'application/json', 'Accept': 'application/json'}, body: JSON.stringify(deleteAccount)
+            })
+            */
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/delete`, {
                 method: 'POST', credentials: 'include',
                 headers: {'Content-type': 'application/json', 'Accept': 'application/json'}, body: JSON.stringify(deleteAccount)
             })
@@ -59,11 +67,19 @@ const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
     const handleChanges = async (e) => {
         e.preventDefault()
         const newChanges = { display_name: displayName, about_me: about, id: userData[0]._id}
+        console.log(newChanges)
+        setError([])
         try {
-            const response = await fetch ('http://localhost:3000/users/update-more', {
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/update-more`, {
                 method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, 
                 credentials: 'include', body: JSON.stringify(newChanges)
             })
+/*
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}`, {
+                method: 'POST', headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}, 
+                credentials: 'include', body: JSON.stringify(newChanges)
+            })
+            */
             if (!response.ok) {
                 throw await response.json()
             }
@@ -71,6 +87,7 @@ const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
             if (response.status === 200) {
                 alert('Update successful!')
                 fetchUser()
+                setChanges(false)
             }
         } catch (err) {
             console.log(err)
@@ -143,7 +160,7 @@ const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
                 <h5>DISPLAY NAME</h5>
                 <StyledUserUi>
                     <StyledInput type="text" defaultValue={userData[0].display_name} name="display_name" onChange={(e) => setDisplayName(e.target.value)} 
-                    style={{color: 'white'}} value={displayName}>
+                    style={{color: 'white'}} value={displayName} required>
                     </StyledInput>
                 </StyledUserUi>
                 <h5>AVATAR</h5>
@@ -160,6 +177,13 @@ const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
                 <StyledButton type='submit'>Save Changes</StyledButton>
             </div>
             </form>
+            {error.map(error => {
+                return (
+                    <div style={{ color: 'red', padding: '0.5em'}}>
+                    {error.msg}
+                    </div>
+                )
+            })}
             </div>    
         )
     }

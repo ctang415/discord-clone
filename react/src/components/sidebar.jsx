@@ -24,6 +24,7 @@ const StyledH4 = styled.h4`
 const SideBar = () => {
     const { friends, userData } = useContext(LoginContext)
     const [ messages, setMessages ] = useState([])
+    
     useEffect(() => {
         setMessages(userData[0].chatsList.map(user => user.users))
     }, [])

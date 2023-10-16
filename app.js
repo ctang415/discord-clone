@@ -33,8 +33,6 @@ app.use(passport.session())
 
 
 app.use('/', indexRouter)
-app.use('/users', usersRouter)
-app.use('/chats', chatsRouter)
   
 app.listen('3000', () => {
     console.log('Now listening on port 3000')

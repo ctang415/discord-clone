@@ -23,10 +23,18 @@ const Modal = ( {modal, setModal} ) => {
         const update = { id: userData[0]._id, username: username, password: password }
         setError([])
         try {
-            const response = await fetch ('http://localhost:3000/users/update', {
+            
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/update`, {
                 method: 'POST', credentials: 'include', headers: {'Content-Type': 'application/json', 
                 'Accept': 'application/json'}, body: JSON.stringify(update) 
             })
+            
+/*
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/`, {
+                method: 'POST', credentials: 'include', headers: {'Content-Type': 'application/json', 
+                'Accept': 'application/json'}, body: JSON.stringify(update) 
+            })
+            */
             if (!response.ok) {
                 throw await response.json()
             }

@@ -7,6 +7,7 @@ const Friend = require('../models/friend')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const bcrypt = require('bcryptjs')
+const usersRouter = require('./users')
 
 passport.use(
     new LocalStrategy({
@@ -82,10 +83,11 @@ router.post('/logout', function(req, res, next){
     });
 })
 
-router.get('/register', user_controller.user_create_get)
 
-router.post('/register', user_controller.user_create_post)
+router.use('/users', usersRouter)
 
-router.post('/add-friend', friend_controller.friend_add_post)
+// router.get('/register', user_controller.user_create_get)
+
+//router.post('/add-friend', friend_controller.friend_add_post)
 
 module.exports = router
