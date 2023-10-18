@@ -45,6 +45,7 @@ const Chat = () => {
             }
             let data = await response.json()
             if (response.status === 200) {
+                setChatId(data.chat)
                 console.log(data.chat.messages)
                 setMessages(data.chat.messages)
                 console.log('successful chat retrieval')
@@ -62,8 +63,7 @@ const Chat = () => {
         })
                 await responseTwo.json()
                 if (responseTwo.status === 200) {
-                    fetchUser() 
-                    
+                    fetchUser()                     
                     console.log('successful chat creation')
                 }
            }
@@ -130,7 +130,7 @@ const Chat = () => {
                     {messages.map(( (x, index) => {
                             return (
                                     <div key={index}>
-                                        <Message index={index} poster={poster} setPoster={setPoster} x={x}/>
+                                        <Message index={index} poster={poster} setPoster={setPoster} x={x} fetchMessages={fetchMessages} chatId={chatId}/>
                                     </div>
                                 )
                             })  

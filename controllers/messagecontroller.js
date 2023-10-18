@@ -26,13 +26,16 @@ exports.message_create_post = [
 
 exports.message_delete_post = asyncHandler ( async (req, res, next) => {
     const message = await Message.findById(req.body.id)
-    if (message === null) {
+    const chatMessage = await Chat.findById(req.body.chatid)
+    if (message === null || chatMessage === null ) {
         res.status(400).json({error: "Message does not exist"})
         return
     } else {
-        // let chat = await Chat.findByIdAndUpdate(req.body.chatid, {$pull: { messages: req.body.id}}, {new: true}),
-        // let message = await Message.findByIdAndDelete(req.body.id)
-        // res.status(200).json({message: message, chat: chat})
+        const [updateChat, updateMessage] = await Promise.all( [
+        Chat.findByIdAndUpdate(req.body.chatid, {$pull: { messages: req.body.id}}, {new: true}),
+        Message.findByIdAndDelete(req.body.id)
+        ])
+        res.status(200).json({message: updateMessage, chat: updateChat})
     }
 })
 
@@ -44,8 +47,13 @@ exports.message_update_post = [
             res.status(400).json({errors: errors.array()})
             return
         } else {
-         // let message = await Message.findByIdAndUpdate(req.body.id, {message: req.body.message})
-         //res.status(200).json({message: message})   
+        let message = await Message.findById(req.body.id) 
+         if (message === null) {
+            res.status(400).json({error: "Message does not exist"})
+            return
+         }
+         let newMessage = await Message.findByIdAndUpdate(req.body.id, {message: req.body.message})
+         res.status(200).json({message: newMessage})   
         }
     })
 ]

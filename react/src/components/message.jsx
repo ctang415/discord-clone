@@ -2,7 +2,7 @@ import Discord from "./styled/avatar"
 import StyledList from "./styled/styledlist"
 import SingleMessage from "./SingleMessage"
 
-const Message = ({x, poster, index}) => {
+const Message = ({x, poster, index, fetchMessages, chatId}) => {
     
     return (
         <StyledList style={{display: 'flex', flexDirection: 'row', gap: '1.5em', padding: '0em', alignItems:'center'}} key={x.message}>
@@ -14,7 +14,7 @@ const Message = ({x, poster, index}) => {
                     <p style={ poster[index - 1] === poster[index] && index !== 0 ? {display: 'none' } : {display: 'flex', color: 'white', fontWeight: 'bold'} }>{x.sender.display_name}</p> 
                     <p style={ poster[index - 1] === poster[index] && index !== 0 ? {display: 'none'} : {display: 'flex'}}>{x.timestamp_formatted} {x.creation_time}</p>
                 </div>
-                <SingleMessage x={x} index={index} poster={poster} />
+                <SingleMessage x={x} index={index} poster={poster} fetchMessages={fetchMessages} chatId={chatId}/>
             </div>
         </StyledList>
     )

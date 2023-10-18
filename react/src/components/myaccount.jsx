@@ -97,7 +97,7 @@ const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
 
 
     useEffect( ()=> {
-        if (displayName !== userData[0].display_name || about !== userData[0].about_me) {
+        if (displayName !== userData[0].display_name || about !== userData[0].about_me ) {
             setChanges(true)
         } else {
             setChanges(false)
@@ -159,8 +159,8 @@ const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
                 <div style={{display: 'flex', flexDirection: 'column', backgroundColor: '#36393e', padding: '1em'}}>
                 <h5>DISPLAY NAME</h5>
                 <StyledUserUi>
-                    <StyledInput type="text" defaultValue={userData[0].display_name} name="display_name" onChange={(e) => setDisplayName(e.target.value)} 
-                    style={{color: 'white'}} value={displayName} required>
+                    <StyledInput type="text" value={ displayName === userData[0].display_name ? decode(userData[0].display_name) : displayName} name="display_name" onChange={(e) => setDisplayName(e.target.value)} 
+                    style={{color: 'white'}} required>
                     </StyledInput>
                 </StyledUserUi>
                 <h5>AVATAR</h5>
@@ -169,8 +169,8 @@ const MyAccount = ({setModal, displayName, setDisplayName, about, setAbout,
                     <StyledP>Remove Avatar</StyledP>
                 </div>
                 <h5>ABOUT ME</h5>
-                <StyledTextArea style={{ color: 'white'}} defaultValue={userData[0].about_me} name="about_me"
-                value={decode(about)} onChange={(e) => setAbout(e.target.value)}></StyledTextArea>
+                <StyledTextArea style={{ color: 'white'}} value={ about === userData[0].about_me ? decode(userData[0].about_me) : about} name="about_me"
+                 onChange={(e) => setAbout(e.target.value)}></StyledTextArea>
             </div>
             <div style={ changes ? { display: 'flex' } : {display: 'none'} }>
                 <StyledP onClick={() => handleReset()}>Reset</StyledP> 
