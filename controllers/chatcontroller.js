@@ -3,17 +3,13 @@ const Chat = require('../models/chat')
 const asyncHandler = require('express-async-handler')
 
 exports.chat_detail = asyncHandler ( async (req, res, next ) => {
-    if (req.user) {
-    const chat = await Chat.findOne({users: {$all: [ req.params.id, req.user.id] }})
-    console.log(chat)
+    let path = req.baseUrl.split('/friends')
+    const chat = await Chat.findOne({users: {$all: [ path[1].split('/chats')[0].split('/')[1], req.user.id] }}).populate( {path: 'messages', populate: {path:'sender'} })
     if (chat === null) {
         res.status(400).json({error: 'Chat does not exist'})
         return
     }
     res.status(200).json({chat: chat})
-    } else {
-        console.log('not logged in')
-    }
 })
 
 exports.chat_create_post = asyncHandler ( async (req, res, next ) => {

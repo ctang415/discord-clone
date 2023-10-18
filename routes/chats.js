@@ -4,14 +4,13 @@ const chat_controller = require('../controllers/chatcontroller')
 const message_controller = require('../controllers/messagecontroller')
 const messagesRoute = require('./messages')
 
-router.get('/:chatid', chat_controller.chat_detail)
+router.get('/', chat_controller.chat_detail)
 
 router.post('/', chat_controller.chat_create_post)
 //router.post('/new-chat', chat_controller.chat_create_post)
 
-router.post('/:chatid', message_controller.message_create_post)
 //router.post('/send-message', message_controller.message_create_post)
 
-router.use('/:chatid/messages', messagesRoute)
+router.use('/messages', messagesRoute)
 
 module.exports = router

@@ -167,7 +167,7 @@ const AddFriend = ({friend, pending, all}) => {
                 <div key={friend.recipient.display_name === userData[0].display_name ? friend.requester.display_name : friend.recipient.display_name} to={`/chats/${friend.requester.id}`}
                 style={{display:'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                 <StyledListFriend>
-                <StyledLink to={ friend.recipient.display_name === userData[0].display_name ? `/chats/${friend.requester.id}` : `/chats${friend.recipient.id}`}> 
+                <StyledLink to={ friend.recipient.display_name === userData[0].display_name ? `/chats/${friend.requester.id}` : `/chats/${friend.recipient.id}`}> 
                     
                             <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '1em'}}>
                                 <Discord src={ friend.recipient.display_name === userData[0].display_name ? friend.requester.avatar_url : friend.recipient.avatar_url}/>
@@ -175,7 +175,7 @@ const AddFriend = ({friend, pending, all}) => {
                             </div>
                 </StyledLink>
                 <div style={{display: 'flex', flexDirection: 'row', gap: '1em'}}>
-                <StyledLink to={ friend.recipient.display_name === userData[0].display_name ? `/chats/${friend.requester.id}` : `/chats${friend.recipient.id}`}>
+                <StyledLink to={ friend.recipient.display_name === userData[0].display_name ? `/chats/${friend.requester.id}` : `/chats/${friend.recipient.id}`}>
                 <div style={{backgroundColor: '#1e2124', borderRadius: '1em', padding: '0.5em'}}>
                     <img src={ChatIcon} alt="Chat Icon"/>
                 </div>

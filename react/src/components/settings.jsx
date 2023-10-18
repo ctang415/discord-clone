@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef } from "react"
 import {styled} from 'styled-components'
 import { LoginContext } from "./logincontext"
 
-const SettingsDiv = styled.div`
+export const SettingsDiv = styled.div`
     position: absolute;
     margin-top: 6.5vh;
     padding: 0.5em;

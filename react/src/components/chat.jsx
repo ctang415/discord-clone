@@ -26,13 +26,13 @@ const Chat = () => {
     const [ messages, setMessages] = useState([])
     const { userData, friends, fetchUser } = useContext(LoginContext)
     const [ poster, setPoster ] = useState([])
+    const [ chatId, setChatId] = useState('')
     const params = useParams()
     let ignore = false;
 
     const fetchMessages = async () => {
-        const chat = { user: userData[0].id, friend: `${params.chatid}` }
         try {
-            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/chats/${params.chatid}`, {
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/friends/${params.chatid}/chats`, {
                 method: 'GET', credentials: 'include', headers: {'Content-Type': 'application/json'}
             })
             /*
@@ -43,27 +43,30 @@ const Chat = () => {
             if (!response.ok) {
                 throw await response.json()
             }
-            await response.json()
+            let data = await response.json()
             if (response.status === 200) {
+                console.log(data.chat.messages)
+                setMessages(data.chat.messages)
                 console.log('successful chat retrieval')
             }
         } catch (err) {
-        console.log(err)
+            const chat = { user: userData[0].id, friend: `${params.chatid}` }
+            console.log(err)
         /*
         const responseTwo = await fetch ('http://localhost:3000/chats/new-chat', {
                     method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(chat)
                 })
                 */
-                
-        const responseTwo = await fetch (`http://localhost:3000/users/${userData[0].id}/chats/`, {
+                const responseTwo = await fetch (`http://localhost:3000/users/${userData[0].id}/friends/${params.chatid}/chats`, {
             method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(chat)
         })
                 await responseTwo.json()
                 if (responseTwo.status === 200) {
                     fetchUser() 
+                    
                     console.log('successful chat creation')
                 }
-        }
+           }
     }
 
     const sendMessage = async (e) => {
@@ -76,7 +79,7 @@ const Chat = () => {
                 body: JSON.stringify(myMessage)
             })
             */
-            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/chats/${params.chatid}/`, {
+            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/friends/${params.chatid}/chats/messages`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include', 
                 body: JSON.stringify(myMessage)
             })
@@ -98,14 +101,14 @@ const Chat = () => {
     useEffect(() => {
         if (!ignore) {
             fetchMessages()
-            const filter = friends.map(x => x.requester._display_name === userData[0]._display_name ? x.recipient : x.requester ) 
-            setMessages(userData[0].chatsList.map(x => x.messages)) 
+            const filter = friends.filter(x => x.requester._id === `${params.chatid}` || x.recipient.id === `${params.chatid}`).map(x => x.requester.display_name !== userData[0].display_name ? x.requester : x.recipient) 
             setUser(filter)
             setName(filter[0].display_name)
             setPoster(userData[0].chatsList.map(x=> x.messages)[0].map(y => (y.sender.display_name)))
         }
         return () => { ignore = true }
-    }, [fetchUser])
+    }, [params])
+
 
     return (
         <>
@@ -124,17 +127,14 @@ const Chat = () => {
                      })}
                     <div style={{ padding: '4vh', display: "flex", flexDirection: 'column', lineHeight: '0.4em', minHeight: '75vh', 
                     maxHeight: '75vh', overflow: 'scroll'}}>
-                    {messages.map(( message => {
-                        return (
-                            message.map( (x, index) => {
-                                return (
+                    {messages.map(( (x, index) => {
+                            return (
                                     <div key={index}>
                                         <Message index={index} poster={poster} setPoster={setPoster} x={x}/>
                                     </div>
                                 )
-                            })
-                        )
-                    }))}
+                            })  
+                    )}
                     </div>
                     <form style={{ display: 'flex'}} onSubmit={sendMessage}>
                     <StyledInputChat type="text" name="message" placeholder={`Message @ ${name}`} onChange={(e)=> setMessage(e.target.value)} value={message} required/>
