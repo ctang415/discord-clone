@@ -33,7 +33,6 @@ const AddFriend = ({friend, pending, all}) => {
     const [ friendUsername, setFriendUsername] = useState('')
     const [ accept, setAccept] = useState(false)
     const [ user, setUser] = useState('')
-    const [settings, setSettings] = useState(false)
     const [ myUsername, setMyUsername] = useState('')
     const [ myFriend, setMyFriend] = useState('')
 
@@ -180,11 +179,8 @@ const AddFriend = ({friend, pending, all}) => {
                     <img src={ChatIcon} alt="Chat Icon"/>
                 </div>
                 </StyledLink>
-                <Settings setSettings={setSettings} settings={settings} setId={setId} setMyUsername={setMyUsername} setMyFriend={setMyFriend} 
+                <Settings friend={friend} setId={setId} setMyUsername={setMyUsername} setMyFriend={setMyFriend} 
                 id={id} myFriend={myFriend} myUsername={myUsername} />
-                <div style={{backgroundColor: '#1e2124', borderRadius: '1em', padding: '0.5em'}}>
-                    <img onClick={() => { setSettings(true); setId(friend._id); setMyUsername(friend.recipient.id); setMyFriend(friend.requester.id) }} src={SettingsIcon} alt="Settings Icon"/>
-                </div>
             </div>
             </StyledListFriend>
             </div>
@@ -236,11 +232,8 @@ const AddFriend = ({friend, pending, all}) => {
                                     <img src={ChatIcon} alt="Chat Icon"/>
                                 </div>
                                 </StyledLink>
-                                <Settings settings={settings} setSettings={setSettings} setId={setId} setMyUsername={setMyUsername} setMyFriend={setMyFriend}
-                                id={id} myUsername={myUsername} myFriend={myFriend}/>
-                                <div style={{backgroundColor: '#1e2124', borderRadius: '1em', padding: '0.5em'}}>
-                                    <img onClick={() => {setSettings(true); setId(friend._id); setMyUsername(friend.recipient.id); setMyFriend(friend.requester.id) }} src={SettingsIcon} alt="Settings Icon"/>
-                                </div>
+                                <Settings setId={setId} setMyUsername={setMyUsername} setMyFriend={setMyFriend}
+                                id={id} myUsername={myUsername} myFriend={myFriend} friend={friend}/>
                             </div>
                     </StyledListFriend>
                     )
