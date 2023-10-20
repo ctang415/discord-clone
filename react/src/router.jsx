@@ -31,7 +31,7 @@ const Router = () => {
                         element: <User/>
                     },
                     {
-                        path: '/chats/:chatid',
+                        path: '/users/:userid/chats/:chatid',
                         element: <Chat/>
                     }
                 ]

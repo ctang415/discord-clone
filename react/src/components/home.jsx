@@ -11,7 +11,7 @@ import UserSettings from "./usersettings"
 const Home = () => {
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
-    const { login, setLogin, userData, setUserData, friends, setFriends } = useContext(LoginContext)
+    const { login, setLogin, userData, setUserData, friends, setFriends, setMessages } = useContext(LoginContext)
     const [ error, setError ] = useState('')
 
     const handleLogin = async (e) => {
@@ -31,11 +31,14 @@ const Home = () => {
                 setLogin(true)
                 setUserData([data.data])
                 setFriends(data.data.friendsList)
+                setMessages(data.data.chatsList.map(user => user.users))
                 setEmail('')
                 setPassword('')
-                console.log(data)
+                console.log(data.data.friendsList)
+                console.log(data.data.friendsList.map(friend => friend.recipient.display_name !== data.data.display_name ? friend.recipient.display_name : friend.requester.display_name))
             }
         } catch (err) {
+            console.log(err)
             setError(`${err.error.message}`)
         }
     }

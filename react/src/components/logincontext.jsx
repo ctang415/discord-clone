@@ -12,6 +12,8 @@ export const LoginContext = createContext(
         setLogin: () => {},
         logOut: () => {},
         fetchUser: () => {},
+        setMessages: ()=> {},
+        messages: [],
         setPasswordModal: () => {},
         passwordModal: null,
     }

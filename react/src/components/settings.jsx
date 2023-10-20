@@ -12,7 +12,7 @@ export const SettingsDiv = styled.div`
 `
 
 const Settings = ({setMyUsername, setId, id, setMyFriend, myUsername, myFriend, friend}) => {
-    const { fetchUser } = useContext(LoginContext)
+    const { userData, fetchUser } = useContext(LoginContext)
     const settingsMenu = useRef(null)
     const [ options, setOptions] = useState(false)
         
@@ -25,12 +25,6 @@ const Settings = ({setMyUsername, setId, id, setMyFriend, myUsername, myFriend, 
     const removeFriend = async () => {
         const request = { id: id, myUsername: myUsername, myFriend: myFriend }
         try {
-            /*
-            const response = await fetch('http://localhost:3000/users/remove-friend', {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(request)
-            })
-            */
-
             const response = await fetch(`http://localhost:3000/users/${userData[0].id}/friends/${myFriend}`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(request)
             })
@@ -57,13 +51,13 @@ const Settings = ({setMyUsername, setId, id, setMyFriend, myUsername, myFriend, 
 
         return (
             <>            
-            <div style={{backgroundColor: '#1e2124', borderRadius: '1em', padding: '0.5em'}}>
-            <img onClick={() => {setOptions(true); setId(friend._id); setMyUsername(friend.recipient.id); setMyFriend(friend.requester.id) }} src={SettingsIcon} alt="Settings Icon"/>
-            </div>
+                <div style={{backgroundColor: '#1e2124', borderRadius: '1em', padding: '0.5em'}}>
+                    <img onClick={() => { console.log(friend._id); setOptions(true); setId(friend._id); setMyUsername(friend.recipient.id); setMyFriend(friend.requester.id) }} src={SettingsIcon} alt="Settings Icon"/>
+                </div>
                 <SettingsDiv style={options ? { display: 'flex'} : {display: 'none'}} ref={settingsMenu}>
                     <p onClick={() => removeFriend()}>Remove as friend</p>
                 </SettingsDiv>
-                </>
+            </>
         )
 }
 

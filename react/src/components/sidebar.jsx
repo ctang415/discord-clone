@@ -22,13 +22,19 @@ const StyledH4 = styled.h4`
 `
 
 const SideBar = () => {
-    const { friends, userData } = useContext(LoginContext)
-    const [ messages, setMessages ] = useState([])
-    
-    useEffect(() => {
-        setMessages(userData[0].chatsList.map(user => user.users))
-    }, [])
+    const { friends, userData, messages } = useContext(LoginContext)
+    const [ myFriends, setMyFriends ] = useState([])
 
+    useEffect(() => {
+        setMyFriends(friends.map(friend => friend.recipient.display_name !== userData[0].display_name ? friend.recipient.display_name : friend.requester.display_name))
+        let x = friends.map(friend => friend.recipient.display_name !== userData[0].display_name ? friend.recipient.display_name : friend.requester.display_name)
+        let y = messages.map(user =>  user.filter(x => x.display_name !== userData[0].display_name)[0].display_name)
+        
+        console.log(friends.map(friend => friend.recipient.display_name !== userData[0].display_name ? friend.recipient.display_name : friend.requester.display_name))
+        console.log(messages.map(user =>  user.filter(x => x.display_name !== userData[0].display_name)[0].display_name))
+        
+    }, [])
+    
     return (
         <div style={{ display: "flex", flexDirection: 'column', backgroundColor: '#36393e', 
         minWidth: "15vw", maxWidth: "15vw", minHeight: '95vh', maxHeight: '95vh', overflow: 'scroll'}}>
@@ -46,8 +52,8 @@ const SideBar = () => {
             <StyledUl>
                 {messages.map(user => {
                     return (
-                        <div key={user.filter(x => x._id !== userData[0].id)[0].display_name} style={{ display: 'flex', flexDirection:'row'}}>                        
-                        <StyledLink to={`/chats/${user.filter(x => x._id !== userData[0].id)[0].id}`}>
+                        <div key={user.filter(x => x._id !== userData[0].id)[0].display_name} style={ myFriends.includes((user.filter(x => x._id !== userData[0].id)[0].display_name)) ? { display: 'flex', flexDirection:'row'} : {display: 'none'}}>                        
+                        <StyledLink to={`/users/${userData[0].id}/chats/${user.filter(x => x._id !== userData[0].id)[0].id}`}>
                             <StyledList style={{ display: 'flex', gap: '1em', alignItems: 'center'}}>
                                 <Discord src={user.filter(x => x._id !== userData[0].id)[0].avatar_url}/>
                                 {user.filter(x => x._id !== userData[0].id)[0].display_name}

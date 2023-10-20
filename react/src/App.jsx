@@ -8,6 +8,7 @@ function App() {
   const [login, setLogin] = useState(false)
   const [ friends, setFriends ] = useState([])
   const [ userData, setUserData ] = useState([])
+  const [ messages, setMessages] = useState([])
   const [ profileEdit, setProfileEdit] = useState(false)
   const navigate = useNavigate()
 
@@ -31,7 +32,7 @@ function App() {
 
   const fetchUser = async () => {
     try {
-        const response = await fetch ('http://localhost:3000/users/user-detail', {
+        const response = await fetch (`http://localhost:3000/users/${userData[0].id}`, {
             credentials: 'include'
         })
         if (!response.ok) {
@@ -41,6 +42,7 @@ function App() {
         if (response.status === 200) {
             console.log(data)
             setUserData([data.user_detail])
+            setMessages(data.user_detail.chatsList.map(user => user.users))
             setFriends(data.user_detail.friendsList)
         }
     } catch (err) {
@@ -54,7 +56,7 @@ function App() {
 
   return (
     <>
-      <LoginContext.Provider value={{ setProfileEdit, profileEdit,
+      <LoginContext.Provider value={{ setProfileEdit, profileEdit, messages, setMessages,
         fetchUser, login, setLogin, logOut, friends, setFriends, userData, setUserData, userSettings, setUserSettings}}>
         <Outlet/>
       </LoginContext.Provider>

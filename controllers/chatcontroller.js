@@ -5,6 +5,7 @@ const asyncHandler = require('express-async-handler')
 exports.chat_detail = asyncHandler ( async (req, res, next ) => {
     let path = req.baseUrl.split('/friends')
     const chat = await Chat.findOne({users: {$all: [ path[1].split('/chats')[0].split('/')[1], req.user.id] }}).populate( {path: 'messages', populate: {path:'sender'} })
+    console.log(path)
     if (chat === null) {
         res.status(400).json({error: 'Chat does not exist'})
         return
