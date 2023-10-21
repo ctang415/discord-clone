@@ -6,18 +6,10 @@ const bcrypt = require('bcryptjs')
 
 exports.user_detail = asyncHandler ( async (req, res, next) => {
     if (req.user) {
-    console.log(req.user)
-    console.log('user detail')
     const user = await User.findById(req.user.id).populate([{ path: 'friendsList', populate: { path: 'recipient requester', select: '-password'} }, { path: 'chatsList', populate: [{ path: 'users', select: '-password'}, {path: 'messages', populate: {path: 'sender', select: '-password'}}]} ])
     console.log(user)
+    console.log(req)
     console.log('user detail end')
-    /*const [ user, limitedUser ] = await Promise.all (
-        [ 
-            User.findById(req.user.id).populate('chats', 'friends').exec(),
-            User.findById(req.body.id).select("-email", "-password", "-friends", "-chats").exec()
-        ]
-        )
-      */
     if (isValidObjectId(req.user.id) === false) {
         res.status(404).json({error: "User does not exist"})
         return
@@ -26,8 +18,13 @@ exports.user_detail = asyncHandler ( async (req, res, next) => {
         res.status(404).json({error: "User not found"})
         return
     }
+    if (req.params.userid !== req.user.id) {
+        const friendUser = await User.findById(req.params.userid).select('-password')
+        res.status(200).json({user_detail: friendUser})
+    } else {
         res.status(200).json({user_detail: user})
-} else {
+    }
+    } else {
     console.log('not logged in')
 }
 })

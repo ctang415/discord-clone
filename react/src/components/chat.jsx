@@ -4,6 +4,7 @@ import { useParams } from "react-router"
 import styled from "styled-components"
 import { LoginContext } from "./logincontext"
 import Message from "./message"
+import Profile from "./profile"
 import SideBar from "./sidebar"
 import Discord from "./styled/avatar"
 import StyledChatDiv from "./styled/styledchatdiv"
@@ -11,7 +12,7 @@ import StyledInput from "./styled/styledinput"
 import StyledNav from "./styled/stylednav"
 import StyledUi from "./styled/styledui"
 import StyledUl from "./styled/styledul"
-import UserSettings from "./usersettings"
+import UserSettings from "./usersettings" 
 
 const StyledInputChat = styled(StyledInput)`
     background-color: #36393e;
@@ -27,6 +28,7 @@ const Chat = () => {
     const { userData, friends, fetchUser } = useContext(LoginContext)
     const [ poster, setPoster ] = useState([])
     const [ chatId, setChatId] = useState('')
+    const [ profile, setProfile] = useState(false)
     const params = useParams()
     let ignore = false;
 
@@ -120,12 +122,13 @@ const Chat = () => {
                     {user.map(data => {
                         return (
                             <StyledNav key={data.display_name} style={{ display: 'flex', alignItems: 'center', gap: '1em'}}>         
-                                <Discord src={data.avatar_url}/>      
-                                <div style={{ fontWeight: 'bold', fontSize: '1.25em', display: 'flex', flexDirection: 'row'}} key={data.display_name}>{data.display_name}</div>  
+                                <Discord src={data.avatar_url}/>
+                                <Profile setProfile={setProfile} profile={profile} friendId={params.chatid} />
+                                <div onClick={()=> setProfile(true)} style={{ fontWeight: 'bold', fontSize: '1.25em', display: 'flex', flexDirection: 'row'}} key={data.display_name}>{data.display_name}</div>  
                             </StyledNav>
                            )
                      })}
-                    <div style={{ padding: '4vh', display: "flex", flexDirection: 'column', lineHeight: '0.4em', minHeight: '75vh', 
+                    <div style={{ padding: '4vh', display: "flex", flexDirection: 'column', minHeight: '75vh', 
                     maxHeight: '75vh', overflow: 'scroll'}}>
                     {messages.map(( (x, index) => {
                             return (

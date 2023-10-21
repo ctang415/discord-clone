@@ -88,8 +88,8 @@ const SingleMessage = ({x, poster, index, fetchMessages, chatId}) => {
     } else {
     return (
         <div key={index} onClick={() => editBar()}>
-            {decode(x.message)}
             <EditMessage edit={edit} deleteMessage={deleteMessage} setEditMessage={setEditMessage} setEdit={setEdit} />
+            {decode(x.message)}
         </div>
     )
 }

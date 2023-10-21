@@ -9,6 +9,7 @@ import StyledNav from "./styled/stylednav"
 import StyledUl from "./styled/styledul"
 import Discord from "./styled/avatar"
 import Friend from '../assets/person.svg'
+
 const StyledH4 = styled.h4`
     display: flex;
     flex-direction: row;
@@ -22,18 +23,12 @@ const StyledH4 = styled.h4`
 `
 
 const SideBar = () => {
-    const { friends, userData, messages } = useContext(LoginContext)
+    const { fetchUser, friends, userData, messages } = useContext(LoginContext)
     const [ myFriends, setMyFriends ] = useState([])
 
     useEffect(() => {
-        setMyFriends(friends.map(friend => friend.recipient.display_name !== userData[0].display_name ? friend.recipient.display_name : friend.requester.display_name))
-        let x = friends.map(friend => friend.recipient.display_name !== userData[0].display_name ? friend.recipient.display_name : friend.requester.display_name)
-        let y = messages.map(user =>  user.filter(x => x.display_name !== userData[0].display_name)[0].display_name)
-        
-        console.log(friends.map(friend => friend.recipient.display_name !== userData[0].display_name ? friend.recipient.display_name : friend.requester.display_name))
-        console.log(messages.map(user =>  user.filter(x => x.display_name !== userData[0].display_name)[0].display_name))
-        
-    }, [])
+        setMyFriends(friends.filter(x => x.status === 'Friends').map(friend => friend.recipient.display_name !== userData[0].display_name ? friend.recipient.display_name : friend.requester.display_name))  
+    }, [fetchUser])
     
     return (
         <div style={{ display: "flex", flexDirection: 'column', backgroundColor: '#36393e', 
