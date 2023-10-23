@@ -128,7 +128,7 @@ const Chat = () => {
                             </StyledNav>
                            )
                      })}
-                    <div style={{ padding: '4vh', display: "flex", flexDirection: 'column', minHeight: '75vh', 
+                    <div style={{ padding: '4vh', display: "flex", wordBreak: 'break-all', flexDirection: 'column', minHeight: '75vh', maxWidth: '78.5vw',
                     maxHeight: '75vh', overflow: 'scroll'}}>
                     {messages.map(( (x, index) => {
                             return (

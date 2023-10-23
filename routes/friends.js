@@ -3,9 +3,18 @@ const router = express.Router()
 const friend_controller = require('../controllers/friendcontroller')
 const chatsRoute = require('./chats')
 
-router.post('/', friend_controller.friend_add_post)
+const checkLogin = function (req, res, next) {
+    if (req.user) {
+        next()
+    } else {
+        res.status(400).json({error: 'user not logged in'})
+    }
+}
 
-router.post('/:friendid', friend_controller.friend_remove_friend_post)
+
+router.post('/', checkLogin, friend_controller.friend_add_post)
+
+router.post('/:friendid', checkLogin, friend_controller.friend_remove_friend_post)
 
 router.use('/:friendid/chats', chatsRoute)
 

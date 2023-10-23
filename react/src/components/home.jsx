@@ -34,8 +34,6 @@ const Home = () => {
                 setMessages(data.data.chatsList.map(user => user.users))
                 setEmail('')
                 setPassword('')
-                console.log(data.data.friendsList)
-                console.log(data.data.friendsList.map(friend => friend.recipient.display_name !== data.data.display_name ? friend.recipient.display_name : friend.requester.display_name))
             }
         } catch (err) {
             console.log(err)

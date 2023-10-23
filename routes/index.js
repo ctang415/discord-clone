@@ -54,10 +54,6 @@ router.get('/', function (req, res, next) {
   console.log(req.user)
 })
 
-router.get('/login', (req, res, next) => {
-    res.status(200).json('hello')
-})
-
 router.post('/login', function(req, res, next) {
     passport.authenticate('local', function(err, user, info, status) {
       if (err) { return console.log(err) }
@@ -72,9 +68,6 @@ router.post('/login', function(req, res, next) {
     })(req, res, next);
 })
 
-router.get('/logout', async (req, res, next) => {
-})
-
 router.post('/logout', function(req, res, next){
     req.logout( async function(err) {
       if (err) { return next(err); }
@@ -85,9 +78,5 @@ router.post('/logout', function(req, res, next){
 
 
 router.use('/users', usersRouter)
-
-// router.get('/register', user_controller.user_create_get)
-
-//router.post('/add-friend', friend_controller.friend_add_post)
 
 module.exports = router

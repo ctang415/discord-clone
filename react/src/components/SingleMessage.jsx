@@ -8,7 +8,7 @@ const SingleMessage = ({x, poster, index, fetchMessages, chatId}) => {
     const { userData } = useContext(LoginContext)
     const [ edit, setEdit] = useState(false)
     const [editMessage, setEditMessage] = useState(false)
-    const [ newMessage, setNewMessage] = useState('')
+    const [ newMessage, setNewMessage] = useState(x.message)
     const params = useParams()    
     const editMenu = useRef(null)
 
@@ -18,7 +18,9 @@ const SingleMessage = ({x, poster, index, fetchMessages, chatId}) => {
         }
     }
 
-    const updateMessage = async () => {
+    const updateMessage = async (e) => {
+        e.preventDefault()
+        if (newMessage !== '') {
         const myMessage = {id: x._id, message: newMessage}
         try {
             const response = await fetch (`http://localhost:3000/users/${userData[0].id}/friends/${params.chatid}/chats/messages/${x._id}`, {
@@ -35,6 +37,9 @@ const SingleMessage = ({x, poster, index, fetchMessages, chatId}) => {
         } catch (err) {
             console.log(err)
         }
+    } else {
+        setNewMessage(decode(x.message))
+    }
     }
 
     const deleteMessage = async () => {
@@ -75,14 +80,14 @@ const SingleMessage = ({x, poster, index, fetchMessages, chatId}) => {
             if (newMessage !== x.message && newMessage !== '') {
                 updateMessage()
             } 
-            setNewMessage('')
+            setNewMessage(x.message)
         }
     }, [editMessage])
 
     if (editMessage) { 
         return (
-            <form key={index} ref={editMenu}>
-                <input type="text" name="message" value={ newMessage === decode(x.message) || newMessage === '' ? decode(x.message) : newMessage } onChange={(e) => setNewMessage(e.target.value)} required></input>
+            <form onSubmit={updateMessage} key={index} ref={editMenu} action={`http://localhost:3000/users/${userData[0].id}/friends/${params.chatid}/chats/messages/${x._id}`}>
+                <input type="text" name="message" value={ newMessage === decode(x.message) ? decode(x.message) : newMessage } onChange={(e) => setNewMessage(e.target.value)} required></input>
             </form>
         )
     } else {
