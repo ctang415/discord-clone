@@ -10,7 +10,6 @@ const checkLogin = function (req, res, next) {
     }
 }
 
-
 router.post('/', checkLogin, message_controller.message_create_post)
 
 router.post('/:messageid', checkLogin, message_controller.message_update_post)

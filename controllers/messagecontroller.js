@@ -14,7 +14,7 @@ exports.message_create_post = [
             }
         )
         if (!errors.isEmpty()) {
-            res.status(400).json({errors: errors.array()})
+            res.status(400).json({success: false, errors: errors.array()})
             return
         } else {
             const newMessage = await message.save()
