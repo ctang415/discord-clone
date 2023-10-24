@@ -19,7 +19,7 @@ const Home = () => {
         e.preventDefault()
         const loginData = { email: email, password: password}
         try {
-            const response = await fetch ('http://localhost:3000/login', {
+            const response = await fetch ('http://localhost:3000/', {
                 method: 'POST', credentials: 'include',
                 headers: {"Content-Type": "application/json", "Accept": 'application/json'}, body: JSON.stringify(loginData)
             })

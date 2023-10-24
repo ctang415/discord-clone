@@ -50,11 +50,7 @@ passport.deserializeUser(async function(id, done) {
     };
   });
 
-router.get('/', function (req, res, next) {
-  console.log(req.user)
-})
-
-router.post('/login', function(req, res, next) {
+router.post('/', function(req, res, next) {
     passport.authenticate('local', function(err, user, info, status) {
       if (err) { return console.log(err) }
       if (!user) { return res.status(400).json({error: info}) }
