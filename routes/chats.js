@@ -15,9 +15,6 @@ const checkLogin = function (req, res, next) {
 router.get('/', checkLogin, chat_controller.chat_detail)
 
 router.post('/', checkLogin, chat_controller.chat_create_post)
-//router.post('/new-chat', chat_controller.chat_create_post)
-
-//router.post('/send-message', message_controller.message_create_post)
 
 router.use('/messages', messagesRoute)
 

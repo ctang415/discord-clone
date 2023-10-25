@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Error from './components/error'
 import Home from './components/home'
-import Login from './components/login'
 import Register from './components/register'
 import User from './components/profile'
 import Chat from './components/chat'
@@ -17,10 +16,6 @@ const Router = () => {
                     {
                         path: '/',
                         element: <Home/>
-                    },
-                    {
-                        path: '/',
-                        element: <Login/>
                     },
                     {
                         path: '/register',

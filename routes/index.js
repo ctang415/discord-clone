@@ -41,14 +41,21 @@ passport.serializeUser(function(user, done) {
   
 passport.deserializeUser(async function(id, done) {
     try {
-      console.log(id)
       const user = await User.findById(id);
-      console.log('DESERIALIZE!!!!')
       done(null, user);
     } catch(err) {
       done(err);
     };
   });
+
+router.get('/', function (req, res, next) {
+  if (!req.user) {
+    res.status(400).json({success: false})
+    return
+  } else {
+    res.status(200).json({success:true, user: req.user })
+  }
+})
 
 router.post('/', function(req, res, next) {
     passport.authenticate('local', function(err, user, info, status) {
@@ -67,7 +74,7 @@ router.post('/', function(req, res, next) {
 router.post('/logout', function(req, res, next){
     req.logout( async function(err) {
       if (err) { return next(err); }
-        await User.findOneAndUpdate( {email: req.body.username}, {online: false})
+      await User.findOneAndUpdate( {email: req.body.username}, {online: false})
         res.status(200).json({success: true})
     });
 })

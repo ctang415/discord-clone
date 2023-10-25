@@ -37,11 +37,6 @@ const Chat = () => {
             const response = await fetch (`http://localhost:3000/users/${userData[0].id}/friends/${params.chatid}/chats`, {
                 method: 'GET', credentials: 'include', headers: {'Content-Type': 'application/json'}
             })
-            /*
-            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/chats/${params.chatid}`, {
-                method: 'GET', credentials: 'include', headers: {'Content-Type': 'application/json'}
-            })
-            */
             if (!response.ok) {
                 throw await response.json()
             }
@@ -55,11 +50,6 @@ const Chat = () => {
         } catch (err) {
             const chat = { user: userData[0].id, friend: `${params.chatid}` }
             console.log(err)
-        /*
-        const responseTwo = await fetch ('http://localhost:3000/chats/new-chat', {
-                    method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(chat)
-                })
-                */
                 const responseTwo = await fetch (`http://localhost:3000/users/${userData[0].id}/friends/${params.chatid}/chats`, {
             method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(chat)
         })
@@ -75,12 +65,6 @@ const Chat = () => {
         e.preventDefault()
         const myMessage = { friend: `${params.chatid}`, sender: userData[0].id, message: message}
         try {
-            /*
-            const response = await fetch ('http://localhost:3000/chats/send-message', {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include', 
-                body: JSON.stringify(myMessage)
-            })
-            */
             const response = await fetch (`http://localhost:3000/users/${userData[0].id}/friends/${params.chatid}/chats/messages`, {
                 method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include', 
                 body: JSON.stringify(myMessage)

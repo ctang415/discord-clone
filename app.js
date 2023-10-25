@@ -31,7 +31,6 @@ app.use(session({  secret: `${process.env.secret}`, resave: false, saveUninitial
 app.use(passport.initialize()); 
 app.use(passport.session())
 
-
 app.use('/', indexRouter)
   
 app.listen('3000', () => {

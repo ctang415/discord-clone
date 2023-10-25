@@ -28,13 +28,6 @@ const Modal = ( {modal, setModal} ) => {
                 method: 'POST', credentials: 'include', headers: {'Content-Type': 'application/json', 
                 'Accept': 'application/json'}, body: JSON.stringify(update) 
             })
-            
-/*
-            const response = await fetch (`http://localhost:3000/users/${userData[0].id}/`, {
-                method: 'POST', credentials: 'include', headers: {'Content-Type': 'application/json', 
-                'Accept': 'application/json'}, body: JSON.stringify(update) 
-            })
-            */
             if (!response.ok) {
                 throw await response.json()
             }

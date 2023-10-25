@@ -16,7 +16,7 @@ function App() {
     const username = {  username: email }
     try {
       let response = await fetch ('http://localhost:3000/logout', {
-        method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(username)
+        method: 'POST', headers: {'Content-Type': 'application/json'}, credentials: 'include' , body: JSON.stringify(username)
     })
         await response.json()
         if (response.status === 200) {
@@ -50,9 +50,47 @@ function App() {
     }
 }
 
-  useEffect(() => {
-    console.log(userData) 
-  }, [userData])
+useEffect( () => {
+  if (!login) {
+  const checkLogin = async () => {
+  try {
+    const response = await fetch ('http://localhost:3000/', {
+      credentials: 'include'
+    })
+    if (!response.ok) {
+      throw await response.json()
+    }
+    let data = await response.json()
+    if (response.status === 200) {
+      const fetchUserTwo = async () => {
+        try {
+            const response = await fetch (`http://localhost:3000/users/${data.user._id}`, {
+                credentials: 'include'
+            })
+            if (!response.ok) {
+                throw await response.json()
+            }
+            const datatwo = await response.json()
+            if (response.ok) {
+                console.log(datatwo)
+                setUserData([datatwo.user_detail])
+                setMessages(datatwo.user_detail.chatsList.map(user => user.users))
+                setFriends(datatwo.user_detail.friendsList)
+              setLogin(true)
+              }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    fetchUserTwo()
+    }
+  } catch (err) {
+    setLogin(false)
+  }
+  }
+  checkLogin() 
+  }
+}, [])
 
   return (
     <>
