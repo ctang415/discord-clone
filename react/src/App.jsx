@@ -4,12 +4,13 @@ import { Outlet, useNavigate } from 'react-router'
 import { LoginContext } from './components/logincontext'
 
 function App() {
-  const [ userSettings, setUserSettings] = useState(false)
-  const [login, setLogin] = useState(false)
+  const [ userSettings, setUserSettings ] = useState(false)
+  const [ login, setLogin ] = useState(false)
   const [ friends, setFriends ] = useState([])
   const [ userData, setUserData ] = useState([])
-  const [ messages, setMessages] = useState([])
-  const [ profileEdit, setProfileEdit] = useState(false)
+  const [ messages, setMessages ] = useState([])
+  const [ profileEdit, setProfileEdit ] = useState(false)
+  const [ isLoading, setIsLoading ] = useState(true)
   const navigate = useNavigate()
 
   const logOut = async (email) => {
@@ -52,49 +53,53 @@ function App() {
 
 useEffect( () => {
   if (!login) {
-  const checkLogin = async () => {
-  try {
-    const response = await fetch ('http://localhost:3000/', {
-      credentials: 'include'
-    })
-    if (!response.ok) {
-      throw await response.json()
-    }
-    let data = await response.json()
-    if (response.status === 200) {
-      const fetchUserTwo = async () => {
-        try {
+    setIsLoading(true)
+    const checkLogin = async () => {
+      try {
+        const response = await fetch ('http://localhost:3000/', {
+        credentials: 'include'
+      })
+      if (!response.ok) {
+        throw await response.json()
+      }
+      let data = await response.json()
+      if (response.status === 200) {
+
+        const fetchLoggedUser = async () => {
+          try {
             const response = await fetch (`http://localhost:3000/users/${data.user._id}`, {
-                credentials: 'include'
+              credentials: 'include'
             })
             if (!response.ok) {
-                throw await response.json()
+              throw await response.json()
             }
-            const datatwo = await response.json()
-            if (response.ok) {
-                console.log(datatwo)
-                setUserData([datatwo.user_detail])
-                setMessages(datatwo.user_detail.chatsList.map(user => user.users))
-                setFriends(datatwo.user_detail.friendsList)
-              setLogin(true)
+            const myData = await response.json()
+              if (response.status === 200) {
+                setUserData([myData.user_detail])
+                setMessages(myData.user_detail.chatsList.map(user => user.users))
+                setFriends(myData.user_detail.friendsList)
+                setLogin(true)
+                setIsLoading(false)
               }
-        } catch (err) {
-            console.log(err)
+          } catch (err) {
+            setLogin(false)
+          }
         }
-    }
-    fetchUserTwo()
+      fetchLoggedUser()
     }
   } catch (err) {
     setLogin(false)
+    setIsLoading(false)
   }
   }
   checkLogin() 
   }
+
 }, [])
 
   return (
     <>
-      <LoginContext.Provider value={{ setProfileEdit, profileEdit, messages, setMessages,
+      <LoginContext.Provider value={{ setProfileEdit, profileEdit, messages, setMessages, isLoading, setIsLoading,
         fetchUser, login, setLogin, logOut, friends, setFriends, userData, setUserData, userSettings, setUserSettings}}>
         <Outlet/>
       </LoginContext.Provider>

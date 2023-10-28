@@ -20,7 +20,7 @@ const LoggedUser = () => {
     
     useEffect(() => {
         setUser(userData[0])
-    }, [])
+    }, [userData])
 
     return (
         <>

@@ -11,7 +11,7 @@ import UserSettings from "./usersettings"
 const Home = () => {
     const [ email, setEmail ] = useState('')
     const [ password, setPassword ] = useState('')
-    const { login, setLogin, userData, setUserData, friends, setFriends, setMessages } = useContext(LoginContext)
+    const { login, setLogin, userData, setUserData, friends, setFriends, setMessages, isLoading, setIsLoading } = useContext(LoginContext)
     const [ error, setError ] = useState('')
 
     const handleLogin = async (e) => {
@@ -41,7 +41,7 @@ const Home = () => {
         }
     }
 
-    if (login) {
+    if (login && !isLoading) {
         return (
             <> 
                 <div style={{ display: 'flex', flexDirection: 'row', gap: '1em'}}>
@@ -50,6 +50,12 @@ const Home = () => {
                     <Friends/>
                 </div>
             </>
+        )
+    } else if (!login && isLoading) { 
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'center', margin: '5%'}}>
+                <h3>LOADING</h3>
+            </div>
         )
     } else {
         return (
